@@ -1,5 +1,5 @@
 #pragma once
-
+//JEREMI YA ENTRE
 namespace TB1TransformacionesLineales {
 
 	using namespace System;
