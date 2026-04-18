@@ -37,26 +37,11 @@ namespace TB1TransformacionesLineales {
 
 	protected:
 
-
-
-
-
-
-
-
-
-
 	private: System::Windows::Forms::Panel^ pnlMostrarFigura;
 	private: System::Windows::Forms::GroupBox^ grpHomotecia;
-
-
-
-
 	private: System::Windows::Forms::GroupBox^ groupBox2;
 	private: System::Windows::Forms::GroupBox^ groupBox3;
 	private: System::Windows::Forms::GroupBox^ grpFigura;
-
-
 	private: System::Windows::Forms::Panel^ pnlFondo;
 	private: System::Windows::Forms::RadioButton^ rbtnY;
 	private: System::Windows::Forms::RadioButton^ rbtnX;
@@ -66,8 +51,6 @@ namespace TB1TransformacionesLineales {
 	private: System::Windows::Forms::TextBox^ txtFactor;
 	private: System::Windows::Forms::Label^ lbAnguloRotacion;
 	private: System::Windows::Forms::TextBox^ txtAnguloRotacion;
-
-
 	private: System::Windows::Forms::Button^ btnRotar;
 	private: System::Windows::Forms::Button^ btnDibujarFigura;
 	private: System::Windows::Forms::TextBox^ txtCordenadasY;
@@ -75,7 +58,6 @@ namespace TB1TransformacionesLineales {
 	private: System::Windows::Forms::Label^ lbCordenadasY;
 	private: System::Windows::Forms::Label^ lbCordenadasX;
 	private: System::Windows::Forms::ComboBox^ cboEjeReflexion;
-
 	private: System::Windows::Forms::Button^ btnReflejar;
 
 
