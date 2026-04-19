@@ -18,9 +18,10 @@ namespace TB1TransformacionesLineales {
 		FrmSimuladorTL(void)
 		{
 			InitializeComponent();
-			//
-			//TODO: agregar c?digo de constructor aqu?
-			//
+			this->SetStyle(System::Windows::Forms::ControlStyles::UserPaint |
+				System::Windows::Forms::ControlStyles::AllPaintingInWmPaint |
+				System::Windows::Forms::ControlStyles::OptimizedDoubleBuffer, true);
+			this->UpdateStyles();
 		}
 
 	protected:
@@ -33,16 +34,19 @@ namespace TB1TransformacionesLineales {
 			{
 				delete components;
 			}
+			if (components) delete components;
+			if (cachedPnlDibujar) { delete cachedPnlDibujar; cachedPnlDibujar = nullptr; }
 		}
 
 	protected:
 
-	private: System::Windows::Forms::Panel^ pnlMostrarFigura;
+
 	private: System::Windows::Forms::GroupBox^ grpHomotecia;
 	private: System::Windows::Forms::GroupBox^ groupBox2;
 	private: System::Windows::Forms::GroupBox^ groupBox3;
 	private: System::Windows::Forms::GroupBox^ grpFigura;
-	private: System::Windows::Forms::Panel^ pnlFondo;
+	private: System::Windows::Forms::Panel^ pnlDibujar;
+
 	private: System::Windows::Forms::RadioButton^ rbtnY;
 	private: System::Windows::Forms::RadioButton^ rbtnX;
 	private: System::Windows::Forms::RadioButton^ radioButton1;
@@ -66,6 +70,7 @@ namespace TB1TransformacionesLineales {
 		/// Variable del dise?ador necesaria.
 		/// </summary>
 		System::ComponentModel::Container ^components;
+		Bitmap^ cachedPnlDibujar;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -74,7 +79,6 @@ namespace TB1TransformacionesLineales {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			this->pnlMostrarFigura = (gcnew System::Windows::Forms::Panel());
 			this->grpHomotecia = (gcnew System::Windows::Forms::GroupBox());
 			this->txtFactor = (gcnew System::Windows::Forms::TextBox());
 			this->lbFactor = (gcnew System::Windows::Forms::Label());
@@ -95,20 +99,12 @@ namespace TB1TransformacionesLineales {
 			this->txtCordenadasX = (gcnew System::Windows::Forms::TextBox());
 			this->lbCordenadasY = (gcnew System::Windows::Forms::Label());
 			this->lbCordenadasX = (gcnew System::Windows::Forms::Label());
-			this->pnlFondo = (gcnew System::Windows::Forms::Panel());
+			this->pnlDibujar = (gcnew System::Windows::Forms::Panel());
 			this->grpHomotecia->SuspendLayout();
 			this->groupBox2->SuspendLayout();
 			this->groupBox3->SuspendLayout();
 			this->grpFigura->SuspendLayout();
 			this->SuspendLayout();
-			// 
-			// pnlMostrarFigura
-			// 
-			this->pnlMostrarFigura->BackColor = System::Drawing::SystemColors::Window;
-			this->pnlMostrarFigura->Location = System::Drawing::Point(285, 13);
-			this->pnlMostrarFigura->Name = L"pnlMostrarFigura";
-			this->pnlMostrarFigura->Size = System::Drawing::Size(746, 700);
-			this->pnlMostrarFigura->TabIndex = 1;
 			// 
 			// grpHomotecia
 			// 
@@ -245,7 +241,7 @@ namespace TB1TransformacionesLineales {
 			this->lbAnguloRotacion->Size = System::Drawing::Size(125, 16);
 			this->lbAnguloRotacion->TabIndex = 8;
 			this->lbAnguloRotacion->Text = L"Angulo de Rotacion";
-			this->lbAnguloRotacion->Click += gcnew System::EventHandler(this, &FrmSimuladorTL::label1_Click);
+
 			// 
 			// txtAnguloRotacion
 			// 
@@ -253,7 +249,6 @@ namespace TB1TransformacionesLineales {
 			this->txtAnguloRotacion->Name = L"txtAnguloRotacion";
 			this->txtAnguloRotacion->Size = System::Drawing::Size(84, 22);
 			this->txtAnguloRotacion->TabIndex = 7;
-			this->txtAnguloRotacion->TextChanged += gcnew System::EventHandler(this, &FrmSimuladorTL::textBox1_TextChanged);
 			// 
 			// grpFigura
 			// 
@@ -311,13 +306,14 @@ namespace TB1TransformacionesLineales {
 			this->lbCordenadasX->TabIndex = 9;
 			this->lbCordenadasX->Text = L"Cordenadas X:";
 			// 
-			// pnlFondo
+			// pnlDibujar
 			// 
-			this->pnlFondo->BackColor = System::Drawing::SystemColors::Window;
-			this->pnlFondo->Location = System::Drawing::Point(285, 13);
-			this->pnlFondo->Name = L"pnlFondo";
-			this->pnlFondo->Size = System::Drawing::Size(746, 700);
-			this->pnlFondo->TabIndex = 2;
+			this->pnlDibujar->BackColor = System::Drawing::SystemColors::InactiveCaptionText;
+			this->pnlDibujar->Location = System::Drawing::Point(285, 13);
+			this->pnlDibujar->Name = L"pnlDibujar";
+			this->pnlDibujar->Size = System::Drawing::Size(746, 700);
+			this->pnlDibujar->TabIndex = 2;
+			this->pnlDibujar->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &FrmSimuladorTL::pnlDibujar_Paint);
 			// 
 			// FrmSimuladorTL
 			// 
@@ -328,8 +324,7 @@ namespace TB1TransformacionesLineales {
 			this->Controls->Add(this->grpFigura);
 			this->Controls->Add(this->groupBox3);
 			this->Controls->Add(this->groupBox2);
-			this->Controls->Add(this->pnlMostrarFigura);
-			this->Controls->Add(this->pnlFondo);
+			this->Controls->Add(this->pnlDibujar);
 			this->Name = L"FrmSimuladorTL";
 			this->Text = L"FrmSimuladorTL";
 			this->grpHomotecia->ResumeLayout(false);
@@ -345,10 +340,55 @@ namespace TB1TransformacionesLineales {
 #pragma endregion
 
 
+		private: void CreateCachedBackground()
+		{
+			if (pnlDibujar->Width <= 0 || pnlDibujar->Height <= 0) return;
 
-private: System::Void label1_Click(System::Object^ sender, System::EventArgs^ e) {
-}
-private: System::Void textBox1_TextChanged(System::Object^ sender, System::EventArgs^ e) {
+			if (cachedPnlDibujar)
+			{
+				delete cachedPnlDibujar;
+				cachedPnlDibujar = nullptr;
+			}
+
+			cachedPnlDibujar = gcnew Bitmap(pnlDibujar->Width, pnlDibujar->Height);
+			Graphics^ g = Graphics::FromImage(cachedPnlDibujar);
+
+			// fondo
+			g->Clear(pnlDibujar->BackColor);
+
+			int w = cachedPnlDibujar->Width;
+			int h = cachedPnlDibujar->Height;
+			int cx = w / 2;
+			int cy = h / 2;
+
+			Pen^ pen = gcnew Pen(Color::White, 2);
+
+			// ejes
+			g->DrawLine(pen, 0, cy, w, cy);    // eje X
+			g->DrawLine(pen, cx, 0, cx, h);    // eje Y
+
+			delete g;
+		}
+
+
+
+
+private: System::Void pnlDibujar_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e) {
+	Graphics^ g = e->Graphics;
+
+	if (cachedPnlDibujar == nullptr)
+	{
+		CreateCachedBackground();
+	}
+
+	// dibujar fondo con ejes desde la bitmap cacheada
+	if (cachedPnlDibujar)
+	{
+		g->DrawImageUnscaled(cachedPnlDibujar, 0, 0);
+	}
+
+	// luego dibuja las figuras dinámicas sobre la imagen
+	
 }
 };
 }
