@@ -368,6 +368,16 @@ namespace TB1TransformacionesLineales {
 			g->DrawLine(pen, 0, cy, w, cy);    // eje X
 			g->DrawLine(pen, cx, 0, cx, h);    // eje Y
 
+			// Ejemplo de fiigura
+			int side = 80;
+			int centrox = pnlDibujar->Width / 2;
+			int centroy = pnlDibujar->Height / 2;
+			int x = centrox - side / 2;
+			int y = centroy - side / 2;
+			Pen^ penFigura = gcnew Pen(Color::Red, 2);
+			g->DrawRectangle(penFigura, x, y, side, side);
+			delete penFigura;
+
 			delete g;
 		}
 
