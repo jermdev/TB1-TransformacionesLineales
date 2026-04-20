@@ -23,6 +23,24 @@
     <ClInclude Include="FrmSimuladorTL.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="Trasformacion.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Rotacion.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Reflexion.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Homotecia.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="TrasformacionService.h">
+      <Filter>Service</Filter>
+    </ClInclude>
+    <ClInclude Include="Figura.h">
+      <Filter>Model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
@@ -30,6 +48,24 @@
     <ClCompile Include="TB1-TransformacionesLineales.cpp" />
     <ClCompile Include="FrmSimuladorTL.cpp">
       <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Homotecia.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Reflexion.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Rotacion.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Trasformacion.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="TrasformacionService.cpp">
+      <Filter>Service</Filter>
+    </ClCompile>
+    <ClCompile Include="Figura.cpp">
+      <Filter>Model</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

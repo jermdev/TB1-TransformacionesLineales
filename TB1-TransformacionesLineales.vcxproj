@@ -124,22 +124,34 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Figura.h" />
     <ClInclude Include="FrmSimuladorTL.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="Homotecia.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Reflexion.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="Rotacion.h" />
+    <ClInclude Include="Trasformacion.h" />
+    <ClInclude Include="TrasformacionService.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="Figura.cpp" />
     <ClCompile Include="FrmSimuladorTL.cpp" />
+    <ClCompile Include="Homotecia.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Reflexion.cpp" />
+    <ClCompile Include="Rotacion.cpp" />
     <ClCompile Include="TB1-TransformacionesLineales.cpp" />
+    <ClCompile Include="Trasformacion.cpp" />
+    <ClCompile Include="TrasformacionService.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
