@@ -288,7 +288,7 @@ namespace TB1TransformacionesLineales {
 			this->txtCordenadasX->Name = L"txtCordenadasX";
 			this->txtCordenadasX->Size = System::Drawing::Size(121, 22);
 			this->txtCordenadasX->TabIndex = 11;
-			// 
+			//
 			// lbCordenadasY
 			// 
 			this->lbCordenadasY->AutoSize = true;

@@ -12,6 +12,12 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Model\Entidades">
+      <UniqueIdentifier>{120913b9-42c7-4ba8-9c50-56cd16cb4e35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Model\Trasformaciones">
+      <UniqueIdentifier>{0c5853e4-b610-49bd-89dc-5bf1c374458e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -23,23 +29,23 @@
     <ClInclude Include="FrmSimuladorTL.h">
       <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="Trasformacion.h">
-      <Filter>Model</Filter>
-    </ClInclude>
-    <ClInclude Include="Rotacion.h">
-      <Filter>Model</Filter>
-    </ClInclude>
-    <ClInclude Include="Reflexion.h">
-      <Filter>Model</Filter>
-    </ClInclude>
-    <ClInclude Include="Homotecia.h">
-      <Filter>Model</Filter>
-    </ClInclude>
     <ClInclude Include="TrasformacionService.h">
       <Filter>Service</Filter>
     </ClInclude>
     <ClInclude Include="Figura.h">
-      <Filter>Model</Filter>
+      <Filter>Model\Entidades</Filter>
+    </ClInclude>
+    <ClInclude Include="Trasformacion.h">
+      <Filter>Model\Trasformaciones</Filter>
+    </ClInclude>
+    <ClInclude Include="Homotecia.h">
+      <Filter>Model\Trasformaciones</Filter>
+    </ClInclude>
+    <ClInclude Include="Reflexion.h">
+      <Filter>Model\Trasformaciones</Filter>
+    </ClInclude>
+    <ClInclude Include="Rotacion.h">
+      <Filter>Model\Trasformaciones</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -48,24 +54,6 @@
     <ClCompile Include="TB1-TransformacionesLineales.cpp" />
     <ClCompile Include="FrmSimuladorTL.cpp">
       <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="Homotecia.cpp">
-      <Filter>Model</Filter>
-    </ClCompile>
-    <ClCompile Include="Reflexion.cpp">
-      <Filter>Model</Filter>
-    </ClCompile>
-    <ClCompile Include="Rotacion.cpp">
-      <Filter>Model</Filter>
-    </ClCompile>
-    <ClCompile Include="Trasformacion.cpp">
-      <Filter>Model</Filter>
-    </ClCompile>
-    <ClCompile Include="TrasformacionService.cpp">
-      <Filter>Service</Filter>
-    </ClCompile>
-    <ClCompile Include="Figura.cpp">
-      <Filter>Model</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
