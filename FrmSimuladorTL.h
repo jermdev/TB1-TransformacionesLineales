@@ -233,6 +233,7 @@ namespace TB1TransformacionesLineales {
 			this->btnRotar->TabIndex = 9;
 			this->btnRotar->Text = L"Rotar";
 			this->btnRotar->UseVisualStyleBackColor = true;
+			this->btnRotar->Click += gcnew System::EventHandler(this, &FrmSimuladorTL::btnRotar_Click);
 			// 
 			// lbAnguloRotacion
 			// 
@@ -242,7 +243,6 @@ namespace TB1TransformacionesLineales {
 			this->lbAnguloRotacion->Size = System::Drawing::Size(125, 16);
 			this->lbAnguloRotacion->TabIndex = 8;
 			this->lbAnguloRotacion->Text = L"Angulo de Rotacion";
-
 			// 
 			// txtAnguloRotacion
 			// 
@@ -288,7 +288,7 @@ namespace TB1TransformacionesLineales {
 			this->txtCordenadasX->Name = L"txtCordenadasX";
 			this->txtCordenadasX->Size = System::Drawing::Size(121, 22);
 			this->txtCordenadasX->TabIndex = 11;
-			//
+			// 
 			// lbCordenadasY
 			// 
 			this->lbCordenadasY->AutoSize = true;
@@ -383,23 +383,90 @@ namespace TB1TransformacionesLineales {
 
 
 
+		private: System::Void pnlDibujar_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e) {
+			Graphics^ g = e->Graphics;
+		
+			if (cachedPnlDibujar == nullptr)
+			{
+				CreateCachedBackground();
+			}
+		
+			// dibujar fondo con ejes desde la bitmap cacheada
+			if (cachedPnlDibujar)
+			{
+				g->DrawImageUnscaled(cachedPnlDibujar, 0, 0);
+			}
+		
+			// luego dibuja las figuras dinámicas sobre la imagen
+			
+		}
 
-private: System::Void pnlDibujar_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e) {
-	Graphics^ g = e->Graphics;
+		// Validadaciones
+		//bool validarCampoFigura() {}
+		
+		
+		bool validarCampoRotacion(String^ campoAngulo) {
 
-	if (cachedPnlDibujar == nullptr)
-	{
-		CreateCachedBackground();
-	}
+			try
+			{
+				int angulo = Convert::ToInt32(campoAngulo);
 
-	// dibujar fondo con ejes desde la bitmap cacheada
-	if (cachedPnlDibujar)
-	{
-		g->DrawImageUnscaled(cachedPnlDibujar, 0, 0);
-	}
+				return (angulo && (angulo >= -360 && angulo <= 360));
+			}
+			catch (Exception^ e) {
+				Console::WriteLine("Error: La cadena contiene caracteres no numéricos.");
+			}
 
-	// luego dibuja las figuras dinámicas sobre la imagen
+			return false;
+		}
+
+		//bool validarCampoReflexión() {}
+
+		template<typename F>
+		bool verificarCampoTextBox(String^ campo, F condicion) {
+			try
+			{
+				int k = Convert::ToInt32(campo);
+
+				return condicion(k);
+			}
+			catch (Exception^ e) {
+				Console::WriteLine("Error: La cadena contiene caracteres no numéricos.");
+			}
+
+			return false;
+		}
+		
+		bool validarCampoReHomotencia(String^ factor) {
+
+			try
+			{
+				int k = Convert::ToInt32(factor);
+
+				return (k && k!=0);
+			}
+			catch (Exception^ e) {
+				Console::WriteLine("Error: La cadena contiene caracteres no numéricos.");
+			}
+
+			return false;
+		}
+
+
+		
+private: System::Void btnRotar_Click(System::Object^ sender, System::EventArgs^ e) {
 	
+	String^ anguloRotacion = this->txtAnguloRotacion->Text;
+
+	bool campoValido = validarCampoRotacion(anguloRotacion);
+
+	if (!campoValido) {
+		MessageBox::Show("El angulo de rotacion no es valido");
+	}
+
+	if (campoValido) {
+		MessageBox::Show("Su angulo es: " + Convert::ToInt32(anguloRotacion));
+	}
 }
 };
 }
