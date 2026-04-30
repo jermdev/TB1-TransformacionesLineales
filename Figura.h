@@ -7,7 +7,7 @@ using namespace std;
 class Figura {
 private:
 	int x, y;
-	vector<Punto*>* puntos;
+	vector<Punto*> puntos;
 public:
 
 	Figura(int x, int y) {
@@ -15,25 +15,26 @@ public:
 		this->y= y;
 	}
 
-	Figura(int x, int y, vector<Punto*> *ls) {
+	Figura(int x, int y, vector<Punto*> ls) {
 		this->x = x;
 		this->y = y;
 		this->puntos = ls;
 	}
 
 	~Figura() {
-		for (auto p : *puntos) {
+		for (auto p : puntos) {
 			delete p;
 		}
 
-		delete[] puntos;
 	}
 
 	void agregarPunto(Punto* p) {
-		puntos->push_back(p);
+		puntos.push_back(p);
 	}
 
-	vector<Punto*>* obtenerListaPuntos() {
+	int getNumeroPuntos() { return puntos.size(); }
+
+	vector<Punto*> getPuntos() {
 		return puntos;
 	}
 

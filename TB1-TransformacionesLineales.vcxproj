@@ -124,6 +124,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Dibujador.h" />
     <ClInclude Include="Figura.h" />
     <ClInclude Include="FrmSimuladorTL.h">
       <FileType>CppForm</FileType>

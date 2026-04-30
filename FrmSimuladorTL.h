@@ -1,4 +1,6 @@
 #pragma once
+#include "Figura.h"
+#include "Dibujador.h"
 //JEREMI YA ENTRE
 
 namespace TB1TransformacionesLineales {
@@ -19,6 +21,17 @@ namespace TB1TransformacionesLineales {
 		FrmSimuladorTL(void)
 		{
 			InitializeComponent();
+
+			// Provar figura con un rombo
+			figura = new Figura(100, 100); // centor de la figura
+			dibujador = new Dibujador();
+
+			figura->agregarPunto(new Punto(0, 50));
+			figura->agregarPunto(new Punto(50, 0));
+			figura->agregarPunto(new Punto(0, -50));
+			figura->agregarPunto(new Punto(-50, 0));
+
+
 			this->SetStyle(System::Windows::Forms::ControlStyles::UserPaint |
 				System::Windows::Forms::ControlStyles::AllPaintingInWmPaint |
 				System::Windows::Forms::ControlStyles::OptimizedDoubleBuffer, true);
@@ -72,6 +85,8 @@ namespace TB1TransformacionesLineales {
 		/// </summary>
 		System::ComponentModel::Container ^components;
 		Bitmap^ cachedPnlDibujar;
+		Figura* figura;
+		Dibujador *dibujador;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -376,12 +391,13 @@ namespace TB1TransformacionesLineales {
 			int y = centroy - side / 2;
 			Pen^ penFigura = gcnew Pen(Color::Red, 2);
 			g->DrawRectangle(penFigura, x, y, side, side);
+
 			delete penFigura;
 
 			delete g;
 		}
 
-
+		
 
 		private: System::Void pnlDibujar_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e) {
 			Graphics^ g = e->Graphics;
@@ -390,16 +406,20 @@ namespace TB1TransformacionesLineales {
 			{
 				CreateCachedBackground();
 			}
-		
+			
 			// dibujar fondo con ejes desde la bitmap cacheada
 			if (cachedPnlDibujar)
 			{
 				g->DrawImageUnscaled(cachedPnlDibujar, 0, 0);
 			}
-		
-			// luego dibuja las figuras dinámicas sobre la imagen
 			
+
+
+			// luego dibuja las figuras dinámicas sobre la imagen
+			dibujador->DibujarFigura(g, figura);
 		}
+
+		
 
 		// Validadaciones
 		//bool validarCampoFigura() {}

@@ -50,6 +50,9 @@
     <ClInclude Include="Figura.h">
       <Filter>Model\Entidades</Filter>
     </ClInclude>
+    <ClInclude Include="Dibujador.h">
+      <Filter>Service</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
