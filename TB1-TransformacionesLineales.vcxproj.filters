@@ -32,9 +32,6 @@
     <ClInclude Include="TrasformacionService.h">
       <Filter>Service</Filter>
     </ClInclude>
-    <ClInclude Include="Figura.h">
-      <Filter>Model\Entidades</Filter>
-    </ClInclude>
     <ClInclude Include="Trasformacion.h">
       <Filter>Model\Trasformaciones</Filter>
     </ClInclude>
@@ -46,6 +43,12 @@
     </ClInclude>
     <ClInclude Include="Rotacion.h">
       <Filter>Model\Trasformaciones</Filter>
+    </ClInclude>
+    <ClInclude Include="Punto.h">
+      <Filter>Model\Entidades</Filter>
+    </ClInclude>
+    <ClInclude Include="Figura.h">
+      <Filter>Model\Entidades</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

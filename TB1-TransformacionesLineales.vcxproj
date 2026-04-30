@@ -130,6 +130,7 @@
     </ClInclude>
     <ClInclude Include="Homotecia.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Punto.h" />
     <ClInclude Include="Reflexion.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Rotacion.h" />
