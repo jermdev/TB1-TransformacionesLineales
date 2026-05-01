@@ -448,7 +448,6 @@ namespace TB1TransformacionesLineales {
 			return false;
 		}
 
-		//bool validarCampoReflexión() {}
 
 		
 		bool validarCampoReHomotencia(String^ factor) {
