@@ -1,6 +1,8 @@
 #pragma once
+
 #include "Figura.h"
 #include "Dibujador.h"
+#include "Trasformacion.h"
 //JEREMI YA ENTRE
 
 namespace TB1TransformacionesLineales {
@@ -64,7 +66,9 @@ namespace TB1TransformacionesLineales {
 	private: System::Windows::Forms::RadioButton^ rbtnY;
 	private: System::Windows::Forms::RadioButton^ rbtnX;
 	private: System::Windows::Forms::RadioButton^ radioButton1;
-	private: System::Windows::Forms::Button^ button1;
+	private: System::Windows::Forms::Button^ btnHomotencia;
+
+
 	private: System::Windows::Forms::Label^ lbFactor;
 	private: System::Windows::Forms::TextBox^ txtFactor;
 	private: System::Windows::Forms::Label^ lbAnguloRotacion;
@@ -86,6 +90,7 @@ namespace TB1TransformacionesLineales {
 		System::ComponentModel::Container ^components;
 		Bitmap^ cachedPnlDibujar;
 		Figura* figura;
+		Trasformacion* trasformacion;
 		Dibujador *dibujador;
 
 #pragma region Windows Form Designer generated code
@@ -101,7 +106,7 @@ namespace TB1TransformacionesLineales {
 			this->rbtnY = (gcnew System::Windows::Forms::RadioButton());
 			this->rbtnX = (gcnew System::Windows::Forms::RadioButton());
 			this->radioButton1 = (gcnew System::Windows::Forms::RadioButton());
-			this->button1 = (gcnew System::Windows::Forms::Button());
+			this->btnHomotencia = (gcnew System::Windows::Forms::Button());
 			this->groupBox2 = (gcnew System::Windows::Forms::GroupBox());
 			this->cboEjeReflexion = (gcnew System::Windows::Forms::ComboBox());
 			this->btnReflejar = (gcnew System::Windows::Forms::Button());
@@ -130,7 +135,7 @@ namespace TB1TransformacionesLineales {
 			this->grpHomotecia->Controls->Add(this->rbtnY);
 			this->grpHomotecia->Controls->Add(this->rbtnX);
 			this->grpHomotecia->Controls->Add(this->radioButton1);
-			this->grpHomotecia->Controls->Add(this->button1);
+			this->grpHomotecia->Controls->Add(this->btnHomotencia);
 			this->grpHomotecia->Location = System::Drawing::Point(12, 547);
 			this->grpHomotecia->Name = L"grpHomotecia";
 			this->grpHomotecia->Size = System::Drawing::Size(253, 142);
@@ -187,14 +192,15 @@ namespace TB1TransformacionesLineales {
 			this->radioButton1->Text = L"Simetrico";
 			this->radioButton1->UseVisualStyleBackColor = true;
 			// 
-			// button1
+			// btnHomotencia
 			// 
-			this->button1->Location = System::Drawing::Point(6, 105);
-			this->button1->Name = L"button1";
-			this->button1->Size = System::Drawing::Size(241, 26);
-			this->button1->TabIndex = 0;
-			this->button1->Text = L"Aplicar";
-			this->button1->UseVisualStyleBackColor = true;
+			this->btnHomotencia->Location = System::Drawing::Point(6, 105);
+			this->btnHomotencia->Name = L"btnHomotencia";
+			this->btnHomotencia->Size = System::Drawing::Size(241, 26);
+			this->btnHomotencia->TabIndex = 0;
+			this->btnHomotencia->Text = L"Aplicar";
+			this->btnHomotencia->UseVisualStyleBackColor = true;
+			this->btnHomotencia->Click += gcnew System::EventHandler(this, &FrmSimuladorTL::btnHomotencia_Click);
 			// 
 			// groupBox2
 			// 
@@ -226,6 +232,7 @@ namespace TB1TransformacionesLineales {
 			this->btnReflejar->TabIndex = 10;
 			this->btnReflejar->Text = L"Reflejar";
 			this->btnReflejar->UseVisualStyleBackColor = true;
+			this->btnReflejar->Click += gcnew System::EventHandler(this, &FrmSimuladorTL::btnReflejar_Click);
 			// 
 			// groupBox3
 			// 
@@ -289,6 +296,7 @@ namespace TB1TransformacionesLineales {
 			this->btnDibujarFigura->TabIndex = 13;
 			this->btnDibujarFigura->Text = L"Dibujar Figura";
 			this->btnDibujarFigura->UseVisualStyleBackColor = true;
+			this->btnDibujarFigura->Click += gcnew System::EventHandler(this, &FrmSimuladorTL::btnDibujarFigura_Click);
 			// 
 			// txtCordenadasY
 			// 
@@ -442,20 +450,6 @@ namespace TB1TransformacionesLineales {
 
 		//bool validarCampoReflexión() {}
 
-		template<typename F>
-		bool verificarCampoTextBox(String^ campo, F condicion) {
-			try
-			{
-				int k = Convert::ToInt32(campo);
-
-				return condicion(k);
-			}
-			catch (Exception^ e) {
-				Console::WriteLine("Error: La cadena contiene caracteres no numéricos.");
-			}
-
-			return false;
-		}
 		
 		bool validarCampoReHomotencia(String^ factor) {
 
@@ -472,21 +466,74 @@ namespace TB1TransformacionesLineales {
 			return false;
 		}
 
+		bool ValidarCompoCordenada(String^ texto) {
+			String^ patron = "^\\d+(,\\s*\\d+)*$";
+			return System::Text::RegularExpressions::Regex::IsMatch(texto, patron);
+		}
 
+	//Manejar Evento Agregar Figura
+
+	private: System::Boolean incializarPuntos(Figura* figura, String^ coordsX, String^ coordsY) {
+		cli::array<String^>^ partesX = coordsX->Split(',');
+		cli::array<String^>^ partesY = coordsY->Split(',');
 		
-private: System::Void btnRotar_Click(System::Object^ sender, System::EventArgs^ e) {
-	
-	String^ anguloRotacion = this->txtAnguloRotacion->Text;
+		if (partesX->Length != partesY->Length) {
+			MessageBox::Show("El numero de cordenadas no conisiden en ambos campos, se debe tener correcpondencia entre cordenadas.");
+			return false;
+		}
+		figura->limpiarPuntos();
+		int nCordenadas = (partesX->Length + partesY->Length) / 2;
+		for (int i = 0; i < nCordenadas; i++) {
 
-	bool campoValido = validarCampoRotacion(anguloRotacion);
+			int x = Int32::Parse(partesX[i]->Trim()); // El trim eleimina los espacios
+			int y = Int32::Parse(partesY[i]->Trim()); // El trim eleimina los espacios
 
-	if (!campoValido) {
-		MessageBox::Show("El angulo de rotacion no es valido");
+			figura->agregarPunto( new Punto( x,y ));
+		}
+		return true;
 	}
 
-	if (campoValido) {
-		MessageBox::Show("Su angulo es: " + Convert::ToInt32(anguloRotacion));
+	private: System::Void btnDibujarFigura_Click(System::Object^ sender, System::EventArgs^ e) {
+
+		String^ textBoxX = txtCordenadasX->Text;
+		String^ textBoxY = txtCordenadasY->Text;
+
+
+		if (!ValidarCompoCordenada(textBoxX) || !ValidarCompoCordenada(textBoxY)) {
+			MessageBox::Show("Datos en el los Compos cordenada No validos. Se debe seguir el formato (15,91,15,45), por ejemplo");
+			txtCordenadasX->Text = "";
+			txtCordenadasY->Text = "";
+
+			return;
+		}
+
+		bool puntosInicalizados = incializarPuntos(figura, textBoxX, textBoxY);
+
+		pnlDibujar->Invalidate();
+
 	}
-}
+	// Manejar Eventos de Trasformacion
+	private: System::Void btnRotar_Click(System::Object^ sender, System::EventArgs^ e) {
+
+		String^ anguloRotacion = this->txtAnguloRotacion->Text;
+
+		bool campoValido = validarCampoRotacion(anguloRotacion);
+
+		if (!campoValido) {
+			MessageBox::Show("El angulo de rotacion no es valido");
+		}
+
+		if (campoValido) {
+			MessageBox::Show("Su angulo es: " + Convert::ToInt32(anguloRotacion));
+		}
+	}
+
+
+	private: System::Void btnReflejar_Click(System::Object^ sender, System::EventArgs^ e) {
+		
+	}
+
+	private: System::Void btnHomotencia_Click(System::Object^ sender, System::EventArgs^ e) {
+	}
 };
 }

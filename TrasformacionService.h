@@ -3,5 +3,5 @@
 #include "Figura.h"
 class TrasformacionService {
 	Trasformacion* trasformacion;
-	Figura* Figura;
+	
 };

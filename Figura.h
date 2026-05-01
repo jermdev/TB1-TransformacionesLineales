@@ -32,6 +32,8 @@ public:
 		puntos.push_back(p);
 	}
 
+	void limpiarPuntos() { puntos.clear(); }
+
 	int getNumeroPuntos() { return puntos.size(); }
 
 	vector<Punto*> getPuntos() {
