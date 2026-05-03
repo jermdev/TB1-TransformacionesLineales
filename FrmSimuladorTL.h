@@ -373,6 +373,8 @@ namespace TB1TransformacionesLineales {
 				delete cachedPnlDibujar;
 				cachedPnlDibujar = nullptr;
 			}
+			
+
 
 			cachedPnlDibujar = gcnew Bitmap(pnlDibujar->Width, pnlDibujar->Height);
 			Graphics^ g = Graphics::FromImage(cachedPnlDibujar);
