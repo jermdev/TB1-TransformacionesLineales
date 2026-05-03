@@ -124,6 +124,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Animacion.h" />
     <ClInclude Include="Dibujador.h" />
     <ClInclude Include="Figura.h" />
     <ClInclude Include="FrmSimuladorTL.h">
@@ -139,6 +140,7 @@
     <ClInclude Include="TrasformacionService.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Animacion.cpp" />
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="FrmSimuladorTL.cpp" />
     <ClCompile Include="pch.cpp">

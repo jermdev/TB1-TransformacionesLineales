@@ -53,12 +53,18 @@
     <ClInclude Include="Dibujador.h">
       <Filter>Service</Filter>
     </ClInclude>
+    <ClInclude Include="Animacion.h">
+      <Filter>Service</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="TB1-TransformacionesLineales.cpp" />
     <ClCompile Include="FrmSimuladorTL.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Animacion.cpp">
       <Filter>UI</Filter>
     </ClCompile>
   </ItemGroup>
