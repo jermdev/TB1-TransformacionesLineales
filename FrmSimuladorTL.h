@@ -2,6 +2,7 @@
 
 #include "Figura.h"
 #include "Dibujador.h"
+#include "Reflexion.h"
 #include "Trasformacion.h"
 //JEREMI YA ENTRE
 
@@ -529,7 +530,27 @@ namespace TB1TransformacionesLineales {
 
 
 	private: System::Void btnReflejar_Click(System::Object^ sender, System::EventArgs^ e) {
-		
+		String^ ladoReflejo = cboEjeReflexion->Text;
+
+		char eje = 'X';
+
+		if (ladoReflejo == "Eje Y") {
+			eje = 'Y';
+		}
+		else if (ladoReflejo == "Eje X") {
+			eje = 'X';
+		}
+
+		if (this->trasformacion != nullptr) {
+			delete this->trasformacion;
+			this->trasformacion = nullptr;
+		}
+
+		this->trasformacion = new Reflexion(figura, eje);
+		this->trasformacion->trasformacion();
+
+		pnlDibujar->Invalidate();
+
 	}
 
 	private: System::Void btnHomotencia_Click(System::Object^ sender, System::EventArgs^ e) {
