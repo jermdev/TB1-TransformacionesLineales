@@ -45,5 +45,17 @@ public:
 
 	void setX(int x) { this->x = x; }
 	void setY(int y) { this->y = y; }
+
+	Figura* clonarFigura() {
+		Figura* cloneFigura = new Figura(x, y);
+
+		for (int i = 0; i < puntos.size(); i++) {
+
+			Punto* nuevo = new Punto(puntos[i]->getX(), puntos[i]->getY()); // copia profunda
+			cloneFigura->agregarPunto(nuevo);
+		}
+
+		return cloneFigura;
+	}
 };
 

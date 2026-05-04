@@ -103,7 +103,9 @@ namespace TB1TransformacionesLineales {
 		Trasformacion* trasformacion;
 		Dibujador *dibujador;
 	private: System::Windows::Forms::Timer^ timer1;
-		Animacion* animacion;
+	private: System::Windows::Forms::Button^ btnRestablecerFigura;
+
+		   Animacion* animacion;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -135,6 +137,7 @@ namespace TB1TransformacionesLineales {
 			this->lbCordenadasX = (gcnew System::Windows::Forms::Label());
 			this->pnlDibujar = (gcnew System::Windows::Forms::Panel());
 			this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
+			this->btnRestablecerFigura = (gcnew System::Windows::Forms::Button());
 			this->grpHomotecia->SuspendLayout();
 			this->groupBox2->SuspendLayout();
 			this->groupBox3->SuspendLayout();
@@ -150,7 +153,7 @@ namespace TB1TransformacionesLineales {
 			this->grpHomotecia->Controls->Add(this->rbtnX);
 			this->grpHomotecia->Controls->Add(this->radioButton1);
 			this->grpHomotecia->Controls->Add(this->btnHomotencia);
-			this->grpHomotecia->Location = System::Drawing::Point(12, 547);
+			this->grpHomotecia->Location = System::Drawing::Point(18, 493);
 			this->grpHomotecia->Name = L"grpHomotecia";
 			this->grpHomotecia->Size = System::Drawing::Size(253, 142);
 			this->grpHomotecia->TabIndex = 0;
@@ -221,7 +224,7 @@ namespace TB1TransformacionesLineales {
 			this->groupBox2->BackColor = System::Drawing::SystemColors::GradientActiveCaption;
 			this->groupBox2->Controls->Add(this->cboEjeReflexion);
 			this->groupBox2->Controls->Add(this->btnReflejar);
-			this->groupBox2->Location = System::Drawing::Point(12, 190);
+			this->groupBox2->Location = System::Drawing::Point(12, 178);
 			this->groupBox2->Name = L"groupBox2";
 			this->groupBox2->Size = System::Drawing::Size(253, 142);
 			this->groupBox2->TabIndex = 1;
@@ -254,9 +257,9 @@ namespace TB1TransformacionesLineales {
 			this->groupBox3->Controls->Add(this->btnRotar);
 			this->groupBox3->Controls->Add(this->lbAnguloRotacion);
 			this->groupBox3->Controls->Add(this->txtAnguloRotacion);
-			this->groupBox3->Location = System::Drawing::Point(12, 370);
+			this->groupBox3->Location = System::Drawing::Point(12, 338);
 			this->groupBox3->Name = L"groupBox3";
-			this->groupBox3->Size = System::Drawing::Size(253, 142);
+			this->groupBox3->Size = System::Drawing::Size(253, 140);
 			this->groupBox3->TabIndex = 1;
 			this->groupBox3->TabStop = false;
 			this->groupBox3->Text = L"Rotacion";
@@ -357,11 +360,22 @@ namespace TB1TransformacionesLineales {
 			// 
 			this->timer1->Tick += gcnew System::EventHandler(this, &FrmSimuladorTL::timer1_Tick);
 			// 
+			// btnRestablecerFigura
+			// 
+			this->btnRestablecerFigura->Location = System::Drawing::Point(12, 656);
+			this->btnRestablecerFigura->Name = L"btnRestablecerFigura";
+			this->btnRestablecerFigura->Size = System::Drawing::Size(135, 35);
+			this->btnRestablecerFigura->TabIndex = 3;
+			this->btnRestablecerFigura->Text = L"Restablecer Figura";
+			this->btnRestablecerFigura->UseVisualStyleBackColor = true;
+			this->btnRestablecerFigura->Click += gcnew System::EventHandler(this, &FrmSimuladorTL::btnRestablecerFigura_Click);
+			// 
 			// FrmSimuladorTL
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(1043, 734);
+			this->Controls->Add(this->btnRestablecerFigura);
 			this->Controls->Add(this->grpHomotecia);
 			this->Controls->Add(this->grpFigura);
 			this->Controls->Add(this->groupBox3);
@@ -557,8 +571,14 @@ namespace TB1TransformacionesLineales {
 		pnlDibujar->Invalidate();
 
 	}
+
+	void guardarFiguraAnterior() {
+		figuraAnterior = figuraActual->clonarFigura();
+	}
 	// Manejar Eventos de Trasformacion
 	private: System::Void btnRotar_Click(System::Object^ sender, System::EventArgs^ e) {
+
+
 
 		String^ anguloRotacion = this->txtAnguloRotacion->Text;
 		bool campoValido = validarCampoRotacion(anguloRotacion);
@@ -567,7 +587,7 @@ namespace TB1TransformacionesLineales {
 			MessageBox::Show("El angulo de rotacion no es valido");
 			return;
 		}
-
+		guardarFiguraAnterior();
 		double valorAngulo = Convert::ToDouble(anguloRotacion);
 		double incremento = valorAngulo / 24.0;	
 
@@ -577,8 +597,6 @@ namespace TB1TransformacionesLineales {
 		timer1->Start();
 		
 		pnlDibujar->Invalidate();
-		//rotarFigura->trasformacion();
-
 
 		//delete rotarFigura;
 	}
@@ -603,6 +621,11 @@ namespace TB1TransformacionesLineales {
 
 		}
 
+	}
+	private: System::Void btnRestablecerFigura_Click(System::Object^ sender, System::EventArgs^ e) {
+		figuraActual = figuraAnterior->clonarFigura();
+
+		pnlDibujar->Invalidate();
 	}
 };
 }
