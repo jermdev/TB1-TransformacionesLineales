@@ -36,7 +36,7 @@ public:
             trasformacionActual->trasformacion();
 
             // 2. Limpia el lienzo (se usa color negro seg�n tu interfaz)
-            g->Clear(Color::Black);
+            //g->Clear(Color::Black);
 
             // 3. Dibuja la figura en su nuevo estado
             dibujador->DibujarFigura(g, trasformacionActual->getFigura());
@@ -48,4 +48,13 @@ public:
             Application::DoEvents();
         }
     }
+
+    void animarPaso() {
+        if (pasosTotales <= 0) return;
+
+        trasformacionActual->trasformacion();
+        pasosTotales--;
+    }
+
+    int getPasosTotales() { return this->pasosTotales; }
 };
