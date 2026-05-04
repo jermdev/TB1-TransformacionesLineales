@@ -28,23 +28,23 @@ public:
     void Animar(Graphics^ g) {
         if (pasosTotales <= 0) return;
 
-        // Calculamos cuánto debe pausar el programa entre cada cuadro (frame)
+        // Calculamos cuï¿½nto debe pausar el programa entre cada cuadro (frame)
         int delay = tiempoTotalMs / pasosTotales;
 
         for (int i = 0; i < pasosTotales; i++) {
-            // 1. Aplica la transformación gradual (un paso)
+            // 1. Aplica la transformaciï¿½n gradual (un paso)
             trasformacionActual->trasformacion();
 
-            // 2. Limpia el lienzo (se usa color negro según tu interfaz)
+            // 2. Limpia el lienzo (se usa color negro segï¿½n tu interfaz)
             g->Clear(Color::Black);
 
             // 3. Dibuja la figura en su nuevo estado
             dibujador->DibujarFigura(g, trasformacionActual->getFigura());
 
-            // 4. Pausa la ejecución para crear el intervalo de la animación
+            // 4. Pausa la ejecuciï¿½n para crear el intervalo de la animaciï¿½n
             Thread::Sleep(delay);
 
-            // 5. Permite que Windows Forms procese los gráficos y no marque "No responde"
+            // 5. Permite que Windows Forms procese los grï¿½ficos y no marque "No responde"
             Application::DoEvents();
         }
     }
