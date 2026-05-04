@@ -4,6 +4,8 @@
 #include "Dibujador.h"
 #include "Reflexion.h"
 #include "Trasformacion.h"
+#include "Rotacion.h"
+#include "Animacion.h"
 //JEREMI YA ENTRE
 
 namespace TB1TransformacionesLineales {
@@ -24,15 +26,19 @@ namespace TB1TransformacionesLineales {
 		FrmSimuladorTL(void)
 		{
 			InitializeComponent();
-
-			// Provar figura con un rombo
-			figura = new Figura(100, 100); // centor de la figura
 			dibujador = new Dibujador();
 
-			figura->agregarPunto(new Punto(0, 50));
-			figura->agregarPunto(new Punto(50, 0));
-			figura->agregarPunto(new Punto(0, -50));
-			figura->agregarPunto(new Punto(-50, 0));
+			int x = pnlDibujar->Width;
+			int y = pnlDibujar->Height;
+
+
+
+			figuraAnterior = new Figura(x/2, y/2);
+			figuraActual = new Figura(x/2, y/2);
+
+
+			timer1->Interval = 50;
+			animacion = nullptr;
 
 
 			this->SetStyle(System::Windows::Forms::ControlStyles::UserPaint |
@@ -82,17 +88,25 @@ namespace TB1TransformacionesLineales {
 	private: System::Windows::Forms::Label^ lbCordenadasX;
 	private: System::Windows::Forms::ComboBox^ cboEjeReflexion;
 	private: System::Windows::Forms::Button^ btnReflejar;
+	private: System::ComponentModel::IContainer^ components;
 
 
 	private:
 		/// <summary>
 		/// Variable del dise?ador necesaria.
 		/// </summary>
-		System::ComponentModel::Container ^components;
+
 		Bitmap^ cachedPnlDibujar;
-		Figura* figura;
+		//Figura* figura;
+		Figura* figuraAnterior;
+		Figura* figuraActual;
+
 		Trasformacion* trasformacion;
 		Dibujador *dibujador;
+	private: System::Windows::Forms::Timer^ timer1;
+	private: System::Windows::Forms::Button^ btnRestablecerFigura;
+
+		   Animacion* animacion;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -101,6 +115,7 @@ namespace TB1TransformacionesLineales {
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			this->components = (gcnew System::ComponentModel::Container());
 			this->grpHomotecia = (gcnew System::Windows::Forms::GroupBox());
 			this->txtFactor = (gcnew System::Windows::Forms::TextBox());
 			this->lbFactor = (gcnew System::Windows::Forms::Label());
@@ -122,6 +137,8 @@ namespace TB1TransformacionesLineales {
 			this->lbCordenadasY = (gcnew System::Windows::Forms::Label());
 			this->lbCordenadasX = (gcnew System::Windows::Forms::Label());
 			this->pnlDibujar = (gcnew System::Windows::Forms::Panel());
+			this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
+			this->btnRestablecerFigura = (gcnew System::Windows::Forms::Button());
 			this->grpHomotecia->SuspendLayout();
 			this->groupBox2->SuspendLayout();
 			this->groupBox3->SuspendLayout();
@@ -137,7 +154,7 @@ namespace TB1TransformacionesLineales {
 			this->grpHomotecia->Controls->Add(this->rbtnX);
 			this->grpHomotecia->Controls->Add(this->radioButton1);
 			this->grpHomotecia->Controls->Add(this->btnHomotencia);
-			this->grpHomotecia->Location = System::Drawing::Point(12, 547);
+			this->grpHomotecia->Location = System::Drawing::Point(18, 493);
 			this->grpHomotecia->Name = L"grpHomotecia";
 			this->grpHomotecia->Size = System::Drawing::Size(253, 142);
 			this->grpHomotecia->TabIndex = 0;
@@ -208,7 +225,7 @@ namespace TB1TransformacionesLineales {
 			this->groupBox2->BackColor = System::Drawing::SystemColors::GradientActiveCaption;
 			this->groupBox2->Controls->Add(this->cboEjeReflexion);
 			this->groupBox2->Controls->Add(this->btnReflejar);
-			this->groupBox2->Location = System::Drawing::Point(12, 190);
+			this->groupBox2->Location = System::Drawing::Point(12, 178);
 			this->groupBox2->Name = L"groupBox2";
 			this->groupBox2->Size = System::Drawing::Size(253, 142);
 			this->groupBox2->TabIndex = 1;
@@ -241,9 +258,9 @@ namespace TB1TransformacionesLineales {
 			this->groupBox3->Controls->Add(this->btnRotar);
 			this->groupBox3->Controls->Add(this->lbAnguloRotacion);
 			this->groupBox3->Controls->Add(this->txtAnguloRotacion);
-			this->groupBox3->Location = System::Drawing::Point(12, 370);
+			this->groupBox3->Location = System::Drawing::Point(12, 338);
 			this->groupBox3->Name = L"groupBox3";
-			this->groupBox3->Size = System::Drawing::Size(253, 142);
+			this->groupBox3->Size = System::Drawing::Size(253, 140);
 			this->groupBox3->TabIndex = 1;
 			this->groupBox3->TabStop = false;
 			this->groupBox3->Text = L"Rotacion";
@@ -340,11 +357,26 @@ namespace TB1TransformacionesLineales {
 			this->pnlDibujar->TabIndex = 2;
 			this->pnlDibujar->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &FrmSimuladorTL::pnlDibujar_Paint);
 			// 
+			// timer1
+			// 
+			this->timer1->Tick += gcnew System::EventHandler(this, &FrmSimuladorTL::timer1_Tick);
+			// 
+			// btnRestablecerFigura
+			// 
+			this->btnRestablecerFigura->Location = System::Drawing::Point(12, 656);
+			this->btnRestablecerFigura->Name = L"btnRestablecerFigura";
+			this->btnRestablecerFigura->Size = System::Drawing::Size(135, 35);
+			this->btnRestablecerFigura->TabIndex = 3;
+			this->btnRestablecerFigura->Text = L"Restablecer Figura";
+			this->btnRestablecerFigura->UseVisualStyleBackColor = true;
+			this->btnRestablecerFigura->Click += gcnew System::EventHandler(this, &FrmSimuladorTL::btnRestablecerFigura_Click);
+			// 
 			// FrmSimuladorTL
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(1043, 734);
+			this->Controls->Add(this->btnRestablecerFigura);
 			this->Controls->Add(this->grpHomotecia);
 			this->Controls->Add(this->grpFigura);
 			this->Controls->Add(this->groupBox3);
@@ -374,6 +406,8 @@ namespace TB1TransformacionesLineales {
 				delete cachedPnlDibujar;
 				cachedPnlDibujar = nullptr;
 			}
+			
+
 
 			cachedPnlDibujar = gcnew Bitmap(pnlDibujar->Width, pnlDibujar->Height);
 			Graphics^ g = Graphics::FromImage(cachedPnlDibujar);
@@ -393,15 +427,6 @@ namespace TB1TransformacionesLineales {
 			g->DrawLine(pen, cx, 0, cx, h);    // eje Y
 
 			// Ejemplo de fiigura
-			int side = 80;
-			int centrox = pnlDibujar->Width / 2;
-			int centroy = pnlDibujar->Height / 2;
-			int x = centrox - side / 2;
-			int y = centroy - side / 2;
-			Pen^ penFigura = gcnew Pen(Color::Red, 2);
-			g->DrawRectangle(penFigura, x, y, side, side);
-
-			delete penFigura;
 
 			delete g;
 		}
@@ -411,10 +436,9 @@ namespace TB1TransformacionesLineales {
 		private: System::Void pnlDibujar_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e) {
 			Graphics^ g = e->Graphics;
 		
-			if (cachedPnlDibujar == nullptr)
-			{
-				CreateCachedBackground();
-			}
+			pnlDibujar->Controls->Clear();
+			CreateCachedBackground();
+			
 			
 			// dibujar fondo con ejes desde la bitmap cacheada
 			if (cachedPnlDibujar)
@@ -425,7 +449,11 @@ namespace TB1TransformacionesLineales {
 
 
 			// luego dibuja las figuras dinámicas sobre la imagen
-			dibujador->DibujarFigura(g, figura);
+			if (figuraActual != nullptr && dibujador != nullptr) {
+
+				dibujador->DibujarFigura(g, figuraActual);
+			}
+
 		}
 
 		
@@ -436,19 +464,21 @@ namespace TB1TransformacionesLineales {
 		
 		bool validarCampoRotacion(String^ campoAngulo) {
 
-			try
-			{
-				int angulo = Convert::ToInt32(campoAngulo);
+    try
+    {
+        double angulo = Convert::ToDouble(campoAngulo);
 
-				return (angulo && (angulo >= -360 && angulo <= 360));
-			}
-			catch (Exception^ e) {
-				Console::WriteLine("Error: La cadena contiene caracteres no numéricos.");
-			}
+        // permitir valores fraccionarios; descartar 0 exacto
+        const double EPS = 1e-9;
+        return (std::abs(angulo) > EPS) && (angulo >= -360.0 && angulo <= 360.0);
+    }
+    catch (Exception^)
+    {
+        Console::WriteLine("Error: La cadena contiene caracteres no numéricos.");
+    }
 
-			return false;
-		}
-
+    return false;
+}
 
 		
 		bool validarCampoReHomotencia(String^ factor) {
@@ -467,29 +497,56 @@ namespace TB1TransformacionesLineales {
 		}
 
 		bool ValidarCompoCordenada(String^ texto) {
-			String^ patron = "^\\d+(,\\s*\\d+)*$";
+			String^ patron = "^[+-]?\\d+(,\\s*[+-]?\\d+)*$";
 			return System::Text::RegularExpressions::Regex::IsMatch(texto, patron);
 		}
 
 	//Manejar Evento Agregar Figura
 
 	private: System::Boolean incializarPuntos(Figura* figura, String^ coordsX, String^ coordsY) {
+		if (figura == nullptr) return false;
+
 		cli::array<String^>^ partesX = coordsX->Split(',');
 		cli::array<String^>^ partesY = coordsY->Split(',');
-		
+
 		if (partesX->Length != partesY->Length) {
 			MessageBox::Show("El numero de cordenadas no conisiden en ambos campos, se debe tener correcpondencia entre cordenadas.");
 			return false;
 		}
-		figura->limpiarPuntos();
-		int nCordenadas = (partesX->Length + partesY->Length) / 2;
-		for (int i = 0; i < nCordenadas; i++) {
 
-			int x = Int32::Parse(partesX[i]->Trim()); // El trim eleimina los espacios
-			int y = Int32::Parse(partesY[i]->Trim()); // El trim eleimina los espacios
-
-			figura->agregarPunto( new Punto( x,y ));
+		// Eliminar y liberar puntos previos (evitar fugas)
+		if (figura->getNumeroPuntos() > 0) {
+			auto antiguos = figura->getPuntos();
+			for (auto p : antiguos) {
+				delete p;
+			}
+			figura->limpiarPuntos();
 		}
+
+		int nCordenadas = partesX->Length;
+		try {
+			for (int i = 0; i < nCordenadas; i++) {
+				int x = Int32::Parse(partesX[i]->Trim());
+				int y = Int32::Parse(partesY[i]->Trim());
+
+				// Interpretamos Y como coordenada cartesiana (positivo hacia arriba).
+				// En coordenadas de pantalla Y crece hacia abajo, por eso invertimos el signo.
+				int yRelative = -y;
+
+				figura->agregarPunto(new Punto(x*10, yRelative*10));
+			}
+		}
+		catch (Exception^ ex) {
+			MessageBox::Show("Error al parsear coordenadas: asegúrate del formato y valores numéricos.");
+			return false;
+		}
+
+		// Centrar la figura en el centro del panel (origen de los ejes).
+		int centerX = pnlDibujar->Width / 2;
+		int centerY = pnlDibujar->Height / 2;
+		figura->setX(centerX);
+		figura->setY(centerY);
+
 		return true;
 	}
 
@@ -501,31 +558,48 @@ namespace TB1TransformacionesLineales {
 
 		if (!ValidarCompoCordenada(textBoxX) || !ValidarCompoCordenada(textBoxY)) {
 			MessageBox::Show("Datos en el los Compos cordenada No validos. Se debe seguir el formato (15,91,15,45), por ejemplo");
-			txtCordenadasX->Text = "";
-			txtCordenadasY->Text = "";
+			/*txtCordenadasX->Text = "";
+			txtCordenadasY->Text = "";*/
 
 			return;
 		}
 
-		bool puntosInicalizados = incializarPuntos(figura, textBoxX, textBoxY);
+		//bool puntosInicalizados = incializarPuntos(figura, textBoxX, textBoxY);
+		incializarPuntos(figuraAnterior, textBoxX, textBoxY);
+		incializarPuntos(figuraActual, textBoxX, textBoxY);
+
 
 		pnlDibujar->Invalidate();
 
 	}
+
+	void guardarFiguraAnterior() {
+		figuraAnterior = figuraActual->clonarFigura();
+	}
 	// Manejar Eventos de Trasformacion
 	private: System::Void btnRotar_Click(System::Object^ sender, System::EventArgs^ e) {
 
-		String^ anguloRotacion = this->txtAnguloRotacion->Text;
 
+
+		String^ anguloRotacion = this->txtAnguloRotacion->Text;
 		bool campoValido = validarCampoRotacion(anguloRotacion);
 
 		if (!campoValido) {
 			MessageBox::Show("El angulo de rotacion no es valido");
+			return;
 		}
+		guardarFiguraAnterior();
+		double valorAngulo = Convert::ToDouble(anguloRotacion);
+		double incremento = valorAngulo / 24.0;	
 
-		if (campoValido) {
-			MessageBox::Show("Su angulo es: " + Convert::ToInt32(anguloRotacion));
-		}
+		Trasformacion* rotarFigura = new Rotacion(figuraActual, incremento);
+		this->animacion = new Animacion(rotarFigura, dibujador, 24, 1200);
+		
+		timer1->Start();
+		
+		pnlDibujar->Invalidate();
+
+		//delete rotarFigura;
 	}
 
 
@@ -554,6 +628,25 @@ namespace TB1TransformacionesLineales {
 	}
 
 	private: System::Void btnHomotencia_Click(System::Object^ sender, System::EventArgs^ e) {
+	}
+	private: System::Void timer1_Tick(System::Object^ sender, System::EventArgs^ e) {
+		if (animacion != nullptr) {
+			animacion->animarPaso();
+			pnlDibujar->Invalidate();
+
+			if (animacion->getPasosTotales() <= 0) {
+				delete animacion;
+				animacion = nullptr;
+				timer1->Stop();
+			}
+
+		}
+
+	}
+	private: System::Void btnRestablecerFigura_Click(System::Object^ sender, System::EventArgs^ e) {
+		figuraActual = figuraAnterior->clonarFigura();
+
+		pnlDibujar->Invalidate();
 	}
 };
 }
