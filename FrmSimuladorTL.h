@@ -449,19 +449,21 @@ namespace TB1TransformacionesLineales {
 		
 		bool validarCampoRotacion(String^ campoAngulo) {
 
-			try
-			{
-				int angulo = Convert::ToInt32(campoAngulo);
+    try
+    {
+        double angulo = Convert::ToDouble(campoAngulo);
 
-				return (angulo && (angulo >= -360 && angulo <= 360));
-			}
-			catch (Exception^ e) {
-				Console::WriteLine("Error: La cadena contiene caracteres no numéricos.");
-			}
+        // permitir valores fraccionarios; descartar 0 exacto
+        const double EPS = 1e-9;
+        return (std::abs(angulo) > EPS) && (angulo >= -360.0 && angulo <= 360.0);
+    }
+    catch (Exception^)
+    {
+        Console::WriteLine("Error: La cadena contiene caracteres no numéricos.");
+    }
 
-			return false;
-		}
-
+    return false;
+}
 
 		
 		bool validarCampoReHomotencia(String^ factor) {
