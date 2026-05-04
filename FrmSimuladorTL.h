@@ -3,6 +3,7 @@
 #include "Figura.h"
 #include "Dibujador.h"
 #include "Trasformacion.h"
+#include "Rotacion.h"
 //JEREMI YA ENTRE
 
 namespace TB1TransformacionesLineales {
@@ -517,16 +518,21 @@ namespace TB1TransformacionesLineales {
 	private: System::Void btnRotar_Click(System::Object^ sender, System::EventArgs^ e) {
 
 		String^ anguloRotacion = this->txtAnguloRotacion->Text;
-
 		bool campoValido = validarCampoRotacion(anguloRotacion);
 
 		if (!campoValido) {
 			MessageBox::Show("El angulo de rotacion no es valido");
+			return;
 		}
 
-		if (campoValido) {
-			MessageBox::Show("Su angulo es: " + Convert::ToInt32(anguloRotacion));
-		}
+		double valorAngulo = Convert::ToDouble(anguloRotacion);
+
+		Rotacion* rotarFigura = new Rotacion(figura, valorAngulo);
+		rotarFigura->trasformacion();
+
+		pnlDibujar->Invalidate();
+
+		delete rotarFigura;
 	}
 
 
