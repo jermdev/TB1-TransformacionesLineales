@@ -589,7 +589,7 @@ namespace TB1TransformacionesLineales {
 		}
 		guardarFiguraAnterior();
 		double valorAngulo = Convert::ToDouble(anguloRotacion);
-		double incremento = valorAngulo / 24.0;	
+		double incremento = valorAngulo / 24.0;
 
 		Trasformacion* rotarFigura = new Rotacion(figuraActual, incremento);
 		this->animacion = new Animacion(rotarFigura, dibujador, 24, 1200);
