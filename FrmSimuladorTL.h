@@ -620,7 +620,7 @@ namespace TB1TransformacionesLineales {
 			this->trasformacion = nullptr;
 		}
 
-		this->trasformacion = new Reflexion(figura, eje);
+		this->trasformacion = new Reflexion(figuraActual, eje);
 		this->trasformacion->trasformacion();
 
 		pnlDibujar->Invalidate();
