@@ -10,6 +10,7 @@ class Dibujador {
 public:
     void DibujarFigura(Graphics^ g, Figura* figura) {
         auto puntosLista = figura->getPuntos();
+        Pen^ pen = gcnew Pen(Color::DarkRed, 2);
 
         if (puntosLista.size() < 2) return;
 
@@ -21,7 +22,7 @@ public:
             int x2 = (int)std::round(puntosLista[i + 1]->getX() + figura->getX());
             int y2 = (int)std::round(puntosLista[i + 1]->getY() + figura->getY());
 
-            g->DrawLine(Pens::DarkRed, Point(x1, y1), Point(x2, y2));
+            g->DrawLine(pen, Point(x1, y1), Point(x2, y2));
         }
 
         // Cierra la figura
@@ -31,6 +32,6 @@ public:
         int x0 = (int)std::round(puntosLista[0]->getX() + figura->getX());
         int y0 = (int)std::round(puntosLista[0]->getY() + figura->getY());
 
-        g->DrawLine(Pens::DarkRed, Point(xLast, yLast), Point(x0, y0));
+        g->DrawLine(pen, Point(xLast, yLast), Point(x0, y0));
     }
 };

@@ -4,6 +4,7 @@
 #include "Dibujador.h"
 #include "Reflexion.h"
 #include "Trasformacion.h"
+#include "Reflexion.h"
 #include "Rotacion.h"
 #include "Animacion.h"
 //JEREMI YA ENTRE
@@ -290,6 +291,7 @@ namespace TB1TransformacionesLineales {
 			this->txtAnguloRotacion->Name = L"txtAnguloRotacion";
 			this->txtAnguloRotacion->Size = System::Drawing::Size(84, 22);
 			this->txtAnguloRotacion->TabIndex = 7;
+			this->txtAnguloRotacion->TextChanged += gcnew System::EventHandler(this, &FrmSimuladorTL::txtAnguloRotacion_TextChanged);
 			// 
 			// grpFigura
 			// 
@@ -590,7 +592,7 @@ namespace TB1TransformacionesLineales {
 		}
 		guardarFiguraAnterior();
 		double valorAngulo = Convert::ToDouble(anguloRotacion);
-		double incremento = valorAngulo / 24.0;	
+		double incremento = valorAngulo / 24.0;
 
 		Trasformacion* rotarFigura = new Rotacion(figuraActual, incremento);
 		this->animacion = new Animacion(rotarFigura, dibujador, 24, 1200);
@@ -604,27 +606,13 @@ namespace TB1TransformacionesLineales {
 
 
 	private: System::Void btnReflejar_Click(System::Object^ sender, System::EventArgs^ e) {
-		String^ ladoReflejo = cboEjeReflexion->Text;
-
-		char eje = 'X';
-
-		if (ladoReflejo == "Eje Y") {
-			eje = 'Y';
-		}
-		else if (ladoReflejo == "Eje X") {
-			eje = 'X';
-		}
-
-		if (this->trasformacion != nullptr) {
-			delete this->trasformacion;
-			this->trasformacion = nullptr;
-		}
-
-		this->trasformacion = new Reflexion(figuraActual, eje);
-		this->trasformacion->trasformacion();
-
+		if (this->cboEjeReflexion->SelectedIndex == -1 || figuraActual == nullptr) return;
+		guardarFiguraAnterior();
+		Reflexion* objReflejar = new Reflexion(figuraActual, this->cboEjeReflexion->SelectedIndex);
+		objReflejar->trasformacion();
 		pnlDibujar->Invalidate();
-
+		delete objReflejar;
+	
 	}
 
 	private: System::Void btnHomotencia_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -648,5 +636,7 @@ namespace TB1TransformacionesLineales {
 
 		pnlDibujar->Invalidate();
 	}
+private: System::Void txtAnguloRotacion_TextChanged(System::Object^ sender, System::EventArgs^ e) {
+}
 };
 }
