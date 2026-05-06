@@ -106,6 +106,7 @@ namespace TB1TransformacionesLineales {
 		Dibujador *dibujador;
 	private: System::Windows::Forms::Timer^ timer1;
 	private: System::Windows::Forms::Button^ btnRestablecerFigura;
+	private: System::Windows::Forms::TextBox^ txtReflejar;
 
 		   Animacion* animacion;
 
@@ -140,6 +141,7 @@ namespace TB1TransformacionesLineales {
 			this->pnlDibujar = (gcnew System::Windows::Forms::Panel());
 			this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
 			this->btnRestablecerFigura = (gcnew System::Windows::Forms::Button());
+			this->txtReflejar = (gcnew System::Windows::Forms::TextBox());
 			this->grpHomotecia->SuspendLayout();
 			this->groupBox2->SuspendLayout();
 			this->groupBox3->SuspendLayout();
@@ -224,6 +226,7 @@ namespace TB1TransformacionesLineales {
 			// groupBox2
 			// 
 			this->groupBox2->BackColor = System::Drawing::SystemColors::GradientActiveCaption;
+			this->groupBox2->Controls->Add(this->txtReflejar);
 			this->groupBox2->Controls->Add(this->cboEjeReflexion);
 			this->groupBox2->Controls->Add(this->btnReflejar);
 			this->groupBox2->Location = System::Drawing::Point(12, 178);
@@ -238,7 +241,7 @@ namespace TB1TransformacionesLineales {
 			this->cboEjeReflexion->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
 			this->cboEjeReflexion->FormattingEnabled = true;
 			this->cboEjeReflexion->Items->AddRange(gcnew cli::array< System::Object^  >(2) { L"Eje X", L"Eje Y" });
-			this->cboEjeReflexion->Location = System::Drawing::Point(10, 53);
+			this->cboEjeReflexion->Location = System::Drawing::Point(10, 33);
 			this->cboEjeReflexion->Name = L"cboEjeReflexion";
 			this->cboEjeReflexion->Size = System::Drawing::Size(223, 24);
 			this->cboEjeReflexion->TabIndex = 11;
@@ -373,6 +376,13 @@ namespace TB1TransformacionesLineales {
 			this->btnRestablecerFigura->UseVisualStyleBackColor = true;
 			this->btnRestablecerFigura->Click += gcnew System::EventHandler(this, &FrmSimuladorTL::btnRestablecerFigura_Click);
 			// 
+			// txtReflejar
+			// 
+			this->txtReflejar->Location = System::Drawing::Point(10, 63);
+			this->txtReflejar->Name = L"txtReflejar";
+			this->txtReflejar->Size = System::Drawing::Size(121, 22);
+			this->txtReflejar->TabIndex = 12;
+			// 
 			// FrmSimuladorTL
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
@@ -389,6 +399,7 @@ namespace TB1TransformacionesLineales {
 			this->grpHomotecia->ResumeLayout(false);
 			this->grpHomotecia->PerformLayout();
 			this->groupBox2->ResumeLayout(false);
+			this->groupBox2->PerformLayout();
 			this->groupBox3->ResumeLayout(false);
 			this->groupBox3->PerformLayout();
 			this->grpFigura->ResumeLayout(false);
@@ -428,8 +439,8 @@ namespace TB1TransformacionesLineales {
 			g->DrawLine(pen, 0, cy, w, cy);    // eje X
 			g->DrawLine(pen, cx, 0, cx, h);    // eje Y
 
-			// Ejemplo de fiigura
-
+			//AQUI COLOCO LA FUNCION DE LOS NUMEROS DE LA RECTA
+			DibujarEjesConNumeros(g, w, h);
 			delete g;
 		}
 
@@ -455,10 +466,54 @@ namespace TB1TransformacionesLineales {
 
 				dibujador->DibujarFigura(g, figuraActual);
 			}
+	
 
 		}
 
-		
+
+
+		void DibujarEjesConNumeros(Graphics^ g, int ancho, int alto) {
+				 
+			int centroX = ancho / 2;
+			int centroY = alto / 2;
+			int escala = 30; // Cambia este valor: ¿Cuántos píxeles separan cada número? 
+			// 1. Dibujar las líneas principales (lo que ya tienen)
+			Pen^ penEjes = gcnew Pen(Color::White, 2.0f);
+			g->DrawLine(penEjes, 0, centroY, ancho, centroY); // Eje X
+			g->DrawLine(penEjes, centroX, 0, centroX, alto);  // Eje Y
+
+			// 2. Preparar el texto
+			System::Drawing::Font^ fuente = gcnew System::Drawing::Font("Arial", 8);
+			SolidBrush^ brochaBlanca = gcnew SolidBrush(Color::White);
+			Pen^ penMarcas = gcnew Pen(Color::LightGray, 1.0f); // Para las rayitas chiquitas
+
+			// 3. Dibujar números en el Eje X (de -15 a 15 por ejemplo)
+			 for (int i = -15; i <= 15; i++) {
+				  if (i == 0) continue; // Saltamos el 0 para que no estorbe en el medio
+
+				  int posX = centroX + (i * escala);
+
+				  // Dibuja una pequeña rayita vertical
+			      g->DrawLine(penMarcas, posX, centroY - 3, posX, centroY + 3);
+
+			      // Dibuja el número debajo del eje X
+				  g->DrawString(i.ToString(), fuente, brochaBlanca, posX - 6, centroY + 5);
+			 }
+
+			 // 4. Dibujar números en el Eje Y
+	    	 for (int i = -15; i <= 15; i++) {
+				  if (i == 0) continue;
+
+				  // ¡OJO!: En pantallas, la Y crece hacia ABAJO. Por eso restamos para ir hacia arriba.
+				  int posY = centroY - (i * escala);
+
+			      // Dibuja una pequeña rayita horizontal
+		   	      g->DrawLine(penMarcas, centroX - 3, posY, centroX + 3, posY);
+
+					   // Dibuja el número a un lado del eje Y
+	      		  g->DrawString(i.ToString(), fuente, brochaBlanca, centroX + 5, posY - 6);
+		     }
+		}
 
 		// Validadaciones
 		//bool validarCampoFigura() {}
@@ -535,7 +590,7 @@ namespace TB1TransformacionesLineales {
 				// En coordenadas de pantalla Y crece hacia abajo, por eso invertimos el signo.
 				int yRelative = -y;
 
-				figura->agregarPunto(new Punto(x*10, yRelative*10));
+				figura->agregarPunto(new Punto(x*30, yRelative*30));
 			}
 		}
 		catch (Exception^ ex) {
@@ -610,6 +665,8 @@ namespace TB1TransformacionesLineales {
 		guardarFiguraAnterior();
 		Reflexion* objReflejar = new Reflexion(figuraActual, this->cboEjeReflexion->SelectedIndex);
 		objReflejar->trasformacion();
+		String^ textoReflejar = txtReflejar->Text->Trim();
+
 		pnlDibujar->Invalidate();
 		delete objReflejar;
 	
