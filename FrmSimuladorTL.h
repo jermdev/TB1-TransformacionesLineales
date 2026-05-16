@@ -4,7 +4,6 @@
 #include "Dibujador.h"
 #include "Reflexion.h"
 #include "Trasformacion.h"
-#include "Reflexion.h"
 #include "Rotacion.h"
 #include "Animacion.h"
 //JEREMI YA ENTRE
@@ -28,6 +27,10 @@ namespace TB1TransformacionesLineales {
 		{
 			InitializeComponent();
 			dibujador = new Dibujador();
+			escalaGrid = 30;
+			mostrarRecta = false;
+			reflecM = 0.0;
+			reflecB = 0.0;
 
 			int x = pnlDibujar->Width;
 			int y = pnlDibujar->Height;
@@ -104,9 +107,25 @@ namespace TB1TransformacionesLineales {
 
 		Trasformacion* trasformacion;
 		Dibujador *dibujador;
+
+		// VAriables para dibujar la una linea en funcion de la pendiente y la coordeanada incial
+		double reflecM;      // pendiente (unidades matemáticas)
+		double reflecB;      // ordenada al origen (unidades matemáticas)
+		bool mostrarRecta;
+		int escalaGrid;
 	private: System::Windows::Forms::Timer^ timer1;
 	private: System::Windows::Forms::Button^ btnRestablecerFigura;
-	private: System::Windows::Forms::TextBox^ txtReflejar;
+	private: System::Windows::Forms::TextBox^ txtPendiente;
+
+
+	private: System::Windows::Forms::Label^ lbEcuacionRecta;
+	private: System::Windows::Forms::Label^ lbPendiente;
+	private: System::Windows::Forms::Label^ lbCordenadaOrigen;
+
+
+	private: System::Windows::Forms::TextBox^ txtCordenadaOrigen;
+
+
 
 		   Animacion* animacion;
 
@@ -126,6 +145,11 @@ namespace TB1TransformacionesLineales {
 			this->radioButton1 = (gcnew System::Windows::Forms::RadioButton());
 			this->btnHomotencia = (gcnew System::Windows::Forms::Button());
 			this->groupBox2 = (gcnew System::Windows::Forms::GroupBox());
+			this->txtCordenadaOrigen = (gcnew System::Windows::Forms::TextBox());
+			this->lbCordenadaOrigen = (gcnew System::Windows::Forms::Label());
+			this->lbPendiente = (gcnew System::Windows::Forms::Label());
+			this->lbEcuacionRecta = (gcnew System::Windows::Forms::Label());
+			this->txtPendiente = (gcnew System::Windows::Forms::TextBox());
 			this->cboEjeReflexion = (gcnew System::Windows::Forms::ComboBox());
 			this->btnReflejar = (gcnew System::Windows::Forms::Button());
 			this->groupBox3 = (gcnew System::Windows::Forms::GroupBox());
@@ -141,7 +165,6 @@ namespace TB1TransformacionesLineales {
 			this->pnlDibujar = (gcnew System::Windows::Forms::Panel());
 			this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
 			this->btnRestablecerFigura = (gcnew System::Windows::Forms::Button());
-			this->txtReflejar = (gcnew System::Windows::Forms::TextBox());
 			this->grpHomotecia->SuspendLayout();
 			this->groupBox2->SuspendLayout();
 			this->groupBox3->SuspendLayout();
@@ -226,29 +249,81 @@ namespace TB1TransformacionesLineales {
 			// groupBox2
 			// 
 			this->groupBox2->BackColor = System::Drawing::SystemColors::GradientActiveCaption;
-			this->groupBox2->Controls->Add(this->txtReflejar);
+			this->groupBox2->Controls->Add(this->txtCordenadaOrigen);
+			this->groupBox2->Controls->Add(this->lbCordenadaOrigen);
+			this->groupBox2->Controls->Add(this->lbPendiente);
+			this->groupBox2->Controls->Add(this->lbEcuacionRecta);
+			this->groupBox2->Controls->Add(this->txtPendiente);
 			this->groupBox2->Controls->Add(this->cboEjeReflexion);
 			this->groupBox2->Controls->Add(this->btnReflejar);
-			this->groupBox2->Location = System::Drawing::Point(12, 178);
+			this->groupBox2->Location = System::Drawing::Point(12, 171);
 			this->groupBox2->Name = L"groupBox2";
-			this->groupBox2->Size = System::Drawing::Size(253, 142);
+			this->groupBox2->Size = System::Drawing::Size(253, 161);
 			this->groupBox2->TabIndex = 1;
 			this->groupBox2->TabStop = false;
 			this->groupBox2->Text = L"Reflexion";
+			// 
+			// txtCordenadaOrigen
+			// 
+			this->txtCordenadaOrigen->Location = System::Drawing::Point(141, 94);
+			this->txtCordenadaOrigen->Name = L"txtCordenadaOrigen";
+			this->txtCordenadaOrigen->Size = System::Drawing::Size(56, 22);
+			this->txtCordenadaOrigen->TabIndex = 16;
+			this->txtCordenadaOrigen->Visible = false;
+			this->txtCordenadaOrigen->TextChanged += gcnew System::EventHandler(this, &FrmSimuladorTL::textCordenadaOrigen_TextChanged);
+			// 
+			// lbCordenadaOrigen
+			// 
+			this->lbCordenadaOrigen->AutoSize = true;
+			this->lbCordenadaOrigen->Location = System::Drawing::Point(114, 97);
+			this->lbCordenadaOrigen->Name = L"lbCordenadaOrigen";
+			this->lbCordenadaOrigen->Size = System::Drawing::Size(18, 16);
+			this->lbCordenadaOrigen->TabIndex = 15;
+			this->lbCordenadaOrigen->Text = L"b:";
+			this->lbCordenadaOrigen->Visible = false;
+			// 
+			// lbPendiente
+			// 
+			this->lbPendiente->AutoSize = true;
+			this->lbPendiente->Location = System::Drawing::Point(13, 97);
+			this->lbPendiente->Name = L"lbPendiente";
+			this->lbPendiente->Size = System::Drawing::Size(21, 16);
+			this->lbPendiente->TabIndex = 14;
+			this->lbPendiente->Text = L"m:";
+			this->lbPendiente->Visible = false;
+			// 
+			// lbEcuacionRecta
+			// 
+			this->lbEcuacionRecta->AutoSize = true;
+			this->lbEcuacionRecta->Location = System::Drawing::Point(10, 60);
+			this->lbEcuacionRecta->Name = L"lbEcuacionRecta";
+			this->lbEcuacionRecta->Size = System::Drawing::Size(167, 16);
+			this->lbEcuacionRecta->TabIndex = 13;
+			this->lbEcuacionRecta->Text = L"Ecuacion lineal (y = mx + b)";
+			this->lbEcuacionRecta->Visible = false;
+			// 
+			// txtPendiente
+			// 
+			this->txtPendiente->Location = System::Drawing::Point(40, 94);
+			this->txtPendiente->Name = L"txtPendiente";
+			this->txtPendiente->Size = System::Drawing::Size(56, 22);
+			this->txtPendiente->TabIndex = 12;
+			this->txtPendiente->Visible = false;
 			// 
 			// cboEjeReflexion
 			// 
 			this->cboEjeReflexion->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
 			this->cboEjeReflexion->FormattingEnabled = true;
-			this->cboEjeReflexion->Items->AddRange(gcnew cli::array< System::Object^  >(2) { L"Eje X", L"Eje Y" });
-			this->cboEjeReflexion->Location = System::Drawing::Point(10, 33);
+			this->cboEjeReflexion->Items->AddRange(gcnew cli::array< System::Object^  >(3) { L"Eje X", L"Eje Y", L"Recta general" });
+			this->cboEjeReflexion->Location = System::Drawing::Point(10, 21);
 			this->cboEjeReflexion->Name = L"cboEjeReflexion";
 			this->cboEjeReflexion->Size = System::Drawing::Size(223, 24);
 			this->cboEjeReflexion->TabIndex = 11;
+			this->cboEjeReflexion->SelectedIndexChanged += gcnew System::EventHandler(this, &FrmSimuladorTL::cboEjeReflexion_SelectedIndexChanged);
 			// 
 			// btnReflejar
 			// 
-			this->btnReflejar->Location = System::Drawing::Point(6, 98);
+			this->btnReflejar->Location = System::Drawing::Point(6, 122);
 			this->btnReflejar->Name = L"btnReflejar";
 			this->btnReflejar->Size = System::Drawing::Size(241, 26);
 			this->btnReflejar->TabIndex = 10;
@@ -376,24 +451,17 @@ namespace TB1TransformacionesLineales {
 			this->btnRestablecerFigura->UseVisualStyleBackColor = true;
 			this->btnRestablecerFigura->Click += gcnew System::EventHandler(this, &FrmSimuladorTL::btnRestablecerFigura_Click);
 			// 
-			// txtReflejar
-			// 
-			this->txtReflejar->Location = System::Drawing::Point(10, 63);
-			this->txtReflejar->Name = L"txtReflejar";
-			this->txtReflejar->Size = System::Drawing::Size(121, 22);
-			this->txtReflejar->TabIndex = 12;
-			// 
 			// FrmSimuladorTL
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(1043, 734);
+			this->Controls->Add(this->pnlDibujar);
 			this->Controls->Add(this->btnRestablecerFigura);
 			this->Controls->Add(this->grpHomotecia);
 			this->Controls->Add(this->grpFigura);
 			this->Controls->Add(this->groupBox3);
 			this->Controls->Add(this->groupBox2);
-			this->Controls->Add(this->pnlDibujar);
 			this->Name = L"FrmSimuladorTL";
 			this->Text = L"FrmSimuladorTL";
 			this->grpHomotecia->ResumeLayout(false);
@@ -441,9 +509,39 @@ namespace TB1TransformacionesLineales {
 
 			//AQUI COLOCO LA FUNCION DE LOS NUMEROS DE LA RECTA
 			DibujarEjesConNumeros(g, w, h);
+			DibujarRecta(g, w, h);
 			delete g;
 		}
 
+
+		void DibujarRecta(Graphics^ g, int ancho, int alto) {
+		 if (!mostrarRecta) return;
+
+		 int centroX = ancho / 2;
+		 int centroY = alto / 2;
+		 double escala = static_cast<double>(escalaGrid);
+
+		 // Rango visible en unidades en X
+		 double xUnitMin = -static_cast<double>(centroX) / escala;
+		 double xUnitMax = static_cast<double>(centroX) / escala;
+
+		 // Dos puntos en unidades matemáticas
+		 double x1 = xUnitMin;
+		 double y1 = reflecM * x1 + reflecB;
+		 double x2 = xUnitMax;
+		 double y2 = reflecM * x2 + reflecB;
+
+		 // Convertir a coordenadas de pantalla (pixeles). Y de unidades -> pantalla: centroY - y*escala
+		 float sx1 = static_cast<float>(centroX + x1 * escala);
+		 float sy1 = static_cast<float>(centroY - y1 * escala);
+		 float sx2 = static_cast<float>(centroX + x2 * escala);
+		 float sy2 = static_cast<float>(centroY - y2 * escala);
+
+		 Pen^ penLinea = gcnew Pen(Color::Yellow, 2.0f);
+		 penLinea->DashStyle = System::Drawing::Drawing2D::DashStyle::Dash;
+		 g->DrawLine(penLinea, sx1, sy1, sx2, sy2);
+		 delete penLinea;
+		}
 		
 
 		private: System::Void pnlDibujar_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e) {
@@ -516,26 +614,25 @@ namespace TB1TransformacionesLineales {
 		}
 
 		// Validadaciones
-		//bool validarCampoFigura() {}
 		
 		
 		bool validarCampoRotacion(String^ campoAngulo) {
 
-    try
-    {
-        double angulo = Convert::ToDouble(campoAngulo);
+			try
+			{
+				double angulo = Convert::ToDouble(campoAngulo);
 
-        // permitir valores fraccionarios; descartar 0 exacto
-        const double EPS = 1e-9;
-        return (std::abs(angulo) > EPS) && (angulo >= -360.0 && angulo <= 360.0);
-    }
-    catch (Exception^)
-    {
-        Console::WriteLine("Error: La cadena contiene caracteres no numéricos.");
-    }
+				// permitir valores fraccionarios; descartar 0 exacto
+				const double EPS = 1e-9;
+				return (std::abs(angulo) > EPS) && (angulo >= -360.0 && angulo <= 360.0);
+			}
+			catch (Exception^)
+			{
+				Console::WriteLine("Error: La cadena contiene caracteres no numéricos.");
+			}
 
-    return false;
-}
+			return false;
+		}
 
 		
 		bool validarCampoReHomotencia(String^ factor) {
@@ -556,6 +653,22 @@ namespace TB1TransformacionesLineales {
 		bool ValidarCompoCordenada(String^ texto) {
 			String^ patron = "^[+-]?\\d+(,\\s*[+-]?\\d+)*$";
 			return System::Text::RegularExpressions::Regex::IsMatch(texto, patron);
+		}
+
+		bool validadarCampoEcuacionLineal(String^ pendiente, String^ coordenadaOrigen) {
+			try
+			{
+				double intPendiente = Convert::ToDouble(pendiente);
+				double intCoordeanadaOrigen = Convert::ToDouble(pendiente);
+
+
+				return true;
+			}
+			catch (Exception^ e) {
+				Console::WriteLine("Error: La cadena contiene caracteres no numéricos.");
+			}
+
+			return false;
 		}
 
 	//Manejar Evento Agregar Figura
@@ -656,22 +769,51 @@ namespace TB1TransformacionesLineales {
 		
 		pnlDibujar->Invalidate();
 
-		//delete rotarFigura;
 	}
 
 
 	private: System::Void btnReflejar_Click(System::Object^ sender, System::EventArgs^ e) {
-		if (this->cboEjeReflexion->SelectedIndex == -1 || figuraActual == nullptr) return;
-		guardarFiguraAnterior();
-		Reflexion* objReflejar = new Reflexion(figuraActual, this->cboEjeReflexion->SelectedIndex);
-		objReflejar->trasformacion();
-		String^ textoReflejar = txtReflejar->Text->Trim();
+    if (this->cboEjeReflexion->SelectedIndex == -1 || figuraActual == nullptr) return;
+    guardarFiguraAnterior();
+    Reflexion* objReflejar = nullptr;
 
-		pnlDibujar->Invalidate();
-		delete objReflejar;
-	
-	}
+    if (cboEjeReflexion->SelectedIndex == 2) {
+        String^ pendiente = this->txtPendiente->Text;
+        String^ cordenadaOrigen = this->txtCordenadaOrigen->Text;
 
+        if (!validadarCampoEcuacionLineal(pendiente, cordenadaOrigen)) {
+            MessageBox::Show("Pendiente o b inválidos.");
+            return;
+        }
+
+        double m_unit = Convert::ToDouble(pendiente);
+        double b_unit = Convert::ToDouble(cordenadaOrigen);
+
+        // Convertir a coordenadas de píxel/almacenadas en Punto:
+        // puntos: x_pix = x_unit * escalaGrid
+        //         y_pix = - y_unit * escalaGrid  (por eso invertimos signos)
+        double m_pix = -m_unit;
+        double b_pix = -b_unit * static_cast<double>(escalaGrid);
+
+        objReflejar = new Reflexion(figuraActual, m_pix, b_pix);
+
+        // guardar para dibujar la recta (dibujar usa unidades; mantiene la interfaz actual)
+        reflecM = m_unit;
+        reflecB = b_unit;
+        mostrarRecta = true;
+    }
+    else {
+        mostrarRecta = false;
+        objReflejar = new Reflexion(figuraActual, this->cboEjeReflexion->SelectedIndex);
+    }
+
+    if (objReflejar != nullptr) {
+        objReflejar->trasformacion();
+        delete objReflejar;
+    }
+
+    pnlDibujar->Invalidate();
+}
 	private: System::Void btnHomotencia_Click(System::Object^ sender, System::EventArgs^ e) {
 	}
 	private: System::Void timer1_Tick(System::Object^ sender, System::EventArgs^ e) {
@@ -694,6 +836,31 @@ namespace TB1TransformacionesLineales {
 		pnlDibujar->Invalidate();
 	}
 private: System::Void txtAnguloRotacion_TextChanged(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void cboEjeReflexion_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
+
+
+	String^ selectedOption = cboEjeReflexion->SelectedItem->ToString();
+
+	if ("Recta general" == selectedOption) {
+
+		lbEcuacionRecta->Visible = true;
+		lbPendiente->Visible = true;
+		lbCordenadaOrigen->Visible = true;
+		txtPendiente->Visible = true;
+		txtCordenadaOrigen->Visible = true;
+	}
+	else {
+		lbEcuacionRecta->Visible = false;
+		lbPendiente->Visible = false;
+		txtPendiente->Visible = false;
+		txtCordenadaOrigen->Visible = false;
+		lbCordenadaOrigen->Visible = false;
+		mostrarRecta = false;
+	}
+	
+}
+private: System::Void textCordenadaOrigen_TextChanged(System::Object^ sender, System::EventArgs^ e) {
 }
 };
 }
