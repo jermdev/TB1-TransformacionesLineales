@@ -12,7 +12,7 @@ public:
 
 	Figura(int x, int y) {
 		this->x = x;
-		this->y= y;
+		this->y = y;
 	}
 
 	Figura(int x, int y, vector<Punto*> ls) {
@@ -25,7 +25,6 @@ public:
 		for (auto p : puntos) {
 			delete p;
 		}
-
 	}
 
 	void agregarPunto(Punto* p) {
@@ -34,7 +33,7 @@ public:
 
 	void limpiarPuntos() { puntos.clear(); }
 
-	int getNumeroPuntos() { return puntos.size(); }
+	int getNumeroPuntos() { return static_cast<int>(puntos.size()); }
 
 	vector<Punto*> getPuntos() {
 		return puntos;
@@ -49,13 +48,11 @@ public:
 	Figura* clonarFigura() {
 		Figura* cloneFigura = new Figura(x, y);
 
-		for (int i = 0; i < puntos.size(); i++) {
-
-			Punto* nuevo = new Punto(puntos[i]->getX(), puntos[i]->getY()); // copia profunda
+		for (size_t i = 0; i < puntos.size(); i++) {
+			Punto* nuevo = new Punto(puntos[i]->getX(), puntos[i]->getY());
 			cloneFigura->agregarPunto(nuevo);
 		}
 
 		return cloneFigura;
 	}
 };
-
