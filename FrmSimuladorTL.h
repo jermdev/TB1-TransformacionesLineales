@@ -8,6 +8,25 @@
 #include "Animacion.h"
 #include "Homotecia.h"
 
+class TransRestablecer : public Trasformacion {
+private:
+	Figura* estadoAnterior;
+public:
+	TransRestablecer(Figura* actual, Figura* anterior) : Trasformacion(actual) {
+		this->estadoAnterior = anterior;
+	}
+	void trasformacion() override {
+		auto ptsAct = getFigura()->getPuntos();
+		auto ptsAnt = estadoAnterior->getPuntos();
+		if (ptsAct.size() == ptsAnt.size()) {
+			for (size_t i = 0; i < ptsAct.size(); i++) {
+				ptsAct[i]->setX(ptsAnt[i]->getX());
+				ptsAct[i]->setY(ptsAnt[i]->getY());
+			}
+		}
+	}
+};
+
 namespace TB1TransformacionesLineales {
 
 	using namespace System;
@@ -27,7 +46,8 @@ namespace TB1TransformacionesLineales {
 		{
 			InitializeComponent();
 			dibujador = new Dibujador();
-			escalaGrid = 30;
+			escalaGrid = 30.0;
+			cachedEscalaGrid = 0.0;
 			mostrarRecta = false;
 			esHomotecia = false;
 			reflecM = 0.0;
@@ -101,9 +121,6 @@ namespace TB1TransformacionesLineales {
 	private: System::ComponentModel::IContainer^ components;
 
 	private:
-		/// <summary>
-		/// Variable del dise?ador necesaria.
-		/// </summary>
 		Bitmap^ cachedPnlDibujar;
 		Figura* figuraAnterior;
 		Figura* figuraActual;
@@ -114,9 +131,11 @@ namespace TB1TransformacionesLineales {
 		double reflecB;
 		bool mostrarRecta;
 		bool esHomotecia;
-		int escalaGrid;
+		double escalaGrid;
+		double cachedEscalaGrid;
 	private: System::Windows::Forms::Timer^ timer1;
 	private: System::Windows::Forms::Button^ btnRestablecerFigura;
+	private: System::Windows::Forms::Button^ btnReiniciar;
 	private: System::Windows::Forms::TextBox^ txtPendiente;
 	private: System::Windows::Forms::Label^ lbEcuacionRecta;
 	private: System::Windows::Forms::Label^ lbPendiente;
@@ -179,6 +198,7 @@ private: System::Windows::Forms::Label^ lbCoordXPHomotencia;
 			   this->pnlDibujar = (gcnew System::Windows::Forms::Panel());
 			   this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
 			   this->btnRestablecerFigura = (gcnew System::Windows::Forms::Button());
+			   this->btnReiniciar = (gcnew System::Windows::Forms::Button());
 			   this->grpHomotecia->SuspendLayout();
 			   this->groupBox2->SuspendLayout();
 			   this->groupBox3->SuspendLayout();
@@ -525,17 +545,24 @@ private: System::Windows::Forms::Label^ lbCoordXPHomotencia;
 			   // 
 			   this->btnRestablecerFigura->Location = System::Drawing::Point(12, 675);
 			   this->btnRestablecerFigura->Name = L"btnRestablecerFigura";
-			   this->btnRestablecerFigura->Size = System::Drawing::Size(135, 35);
+			   this->btnRestablecerFigura->Size = System::Drawing::Size(115, 35);
 			   this->btnRestablecerFigura->TabIndex = 3;
-			   this->btnRestablecerFigura->Text = L"Restablecer Figura";
+			   this->btnRestablecerFigura->Text = L"Deshacer";
 			   this->btnRestablecerFigura->UseVisualStyleBackColor = true;
 			   this->btnRestablecerFigura->Click += gcnew System::EventHandler(this, &FrmSimuladorTL::btnRestablecerFigura_Click);
-			   // 
-			   // FrmSimuladorTL
-			   // 
+
+			   this->btnReiniciar->Location = System::Drawing::Point(135, 675);
+			   this->btnReiniciar->Name = L"btnReiniciar";
+			   this->btnReiniciar->Size = System::Drawing::Size(115, 35);
+			   this->btnReiniciar->TabIndex = 4;
+			   this->btnReiniciar->Text = L"Borrar Todo";
+			   this->btnReiniciar->UseVisualStyleBackColor = true;
+			   this->btnReiniciar->Click += gcnew System::EventHandler(this, &FrmSimuladorTL::btnReiniciar_Click);
+
 			   this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
 			   this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			   this->ClientSize = System::Drawing::Size(1043, 734);
+			   this->Controls->Add(this->btnReiniciar);
 			   this->Controls->Add(this->pnlDibujar);
 			   this->Controls->Add(this->btnRestablecerFigura);
 			   this->Controls->Add(this->grpHomotecia);
@@ -557,18 +584,41 @@ private: System::Windows::Forms::Label^ lbCoordXPHomotencia;
 		   }
 #pragma endregion
 
+		   void AjustarCamara() {
+			   double maxVal = 9.0;
+
+			   if (figuraBaseOriginal != nullptr) {
+				   for (auto p : figuraBaseOriginal->getPuntos()) {
+					   if (std::abs(p->getX()) > maxVal) maxVal = std::abs(p->getX());
+					   if (std::abs(p->getY()) > maxVal) maxVal = std::abs(p->getY());
+				   }
+			   }
+			   if (figuraActual != nullptr) {
+				   for (auto p : figuraActual->getPuntos()) {
+					   if (std::abs(p->getX()) > maxVal) maxVal = std::abs(p->getX());
+					   if (std::abs(p->getY()) > maxVal) maxVal = std::abs(p->getY());
+				   }
+			   }
+
+			   maxVal += 1.0;
+
+			   double minDimension = (double)Math::Min(pnlDibujar->Width / 2, pnlDibujar->Height / 2);
+			   escalaGrid = minDimension / maxVal;
+		   }
+
 	private: void CreateCachedBackground()
 	{
 		if (pnlDibujar->Width <= 0 || pnlDibujar->Height <= 0) return;
 
 		if (cachedPnlDibujar != nullptr) {
-			if (cachedPnlDibujar->Width == pnlDibujar->Width && cachedPnlDibujar->Height == pnlDibujar->Height) {
+			if (cachedPnlDibujar->Width == pnlDibujar->Width && cachedPnlDibujar->Height == pnlDibujar->Height && cachedEscalaGrid == escalaGrid) {
 				return;
 			}
 			delete cachedPnlDibujar;
 			cachedPnlDibujar = nullptr;
 		}
 
+		cachedEscalaGrid = escalaGrid;
 		cachedPnlDibujar = gcnew Bitmap(pnlDibujar->Width, pnlDibujar->Height);
 		Graphics^ g = Graphics::FromImage(cachedPnlDibujar);
 
@@ -593,7 +643,7 @@ private: System::Windows::Forms::Label^ lbCoordXPHomotencia;
 
 			   int centroX = ancho / 2;
 			   int centroY = alto / 2;
-			   double escala = static_cast<double>(escalaGrid);
+			   double escala = escalaGrid;
 
 			   double xUnitMin = -static_cast<double>(centroX) / escala;
 			   double xUnitMax = static_cast<double>(centroX) / escala;
@@ -615,6 +665,8 @@ private: System::Windows::Forms::Label^ lbCoordXPHomotencia;
 		   }
 
 	private: System::Void pnlDibujar_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e) {
+		AjustarCamara();
+
 		Bitmap^ buffer = gcnew Bitmap(pnlDibujar->Width, pnlDibujar->Height);
 		Graphics^ gBuffer = Graphics::FromImage(buffer);
 
@@ -627,10 +679,10 @@ private: System::Windows::Forms::Label^ lbCoordXPHomotencia;
 
 		if (figuraActual != nullptr && dibujador != nullptr) {
 			if (figuraBaseOriginal != nullptr) {
-				dibujador->DibujarFiguraComparativa(gBuffer, figuraBaseOriginal, figuraActual, (double)escalaGrid, esHomotecia);
+				dibujador->DibujarFiguraComparativa(gBuffer, figuraBaseOriginal, figuraActual, escalaGrid, esHomotecia);
 			}
 			else {
-				dibujador->DibujarFiguraNormal(gBuffer, figuraActual, (double)escalaGrid);
+				dibujador->DibujarFiguraNormal(gBuffer, figuraActual, escalaGrid);
 			}
 		}
 
@@ -643,7 +695,7 @@ private: System::Windows::Forms::Label^ lbCoordXPHomotencia;
 		   void DibujarEjesConNumeros(Graphics^ g, int ancho, int alto) {
 			   int centroX = ancho / 2;
 			   int centroY = alto / 2;
-			   int escala = 30;
+			   double escala = escalaGrid;
 
 			   Pen^ penEjes = gcnew Pen(Color::White, 2.0f);
 			   g->DrawLine(penEjes, 0.0f, (float)centroY, (float)ancho, (float)centroY);
@@ -653,29 +705,52 @@ private: System::Windows::Forms::Label^ lbCoordXPHomotencia;
 			   SolidBrush^ brochaBlanca = gcnew SolidBrush(Color::White);
 			   Pen^ penMarcas = gcnew Pen(Color::LightGray, 1.0f);
 
-			   for (int i = -15; i <= 15; i++) {
-				   if (i == 0) continue;
-
-				   int posX = centroX + (i * escala);
-
-				   g->DrawLine(penMarcas, (float)posX, (float)(centroY - 3), (float)posX, (float)(centroY + 3));
-				   g->DrawString(i.ToString(), fuente, brochaBlanca, posX - 6, centroY + 5);
+			   int step = 1;
+			   while ((step * escala) < 20.0) {
+				   if (step == 1) step = 2;
+				   else if (step == 2) step = 5;
+				   else if (step == 5) step = 10;
+				   else if (step == 10) step = 20;
+				   else if (step == 20) step = 50;
+				   else if (step == 50) step = 100;
+				   else step += 100;
 			   }
 
-			   for (int i = -15; i <= 15; i++) {
+			   int maxMarcas = (int)((Math::Max(ancho, alto) / 2) / escala) + 1;
+
+			   for (int i = -maxMarcas; i <= maxMarcas; i++) {
 				   if (i == 0) continue;
 
-				   int posY = centroY - (i * escala);
+				   if (i % step == 0) {
+					   float posX = centroX + (float)(i * escala);
+					   if (posX >= 0 && posX <= ancho) {
+						   g->DrawLine(penMarcas, posX, (float)(centroY - 4), posX, (float)(centroY + 4));
+						   g->DrawString(i.ToString(), fuente, brochaBlanca, posX - 8, centroY + 6);
+					   }
 
-				   g->DrawLine(penMarcas, (float)(centroX - 3), (float)posY, (float)(centroX + 3), (float)posY);
-				   g->DrawString(i.ToString(), fuente, brochaBlanca, centroX + 5, posY - 6);
+					   float posY = centroY - (float)(i * escala);
+					   if (posY >= 0 && posY <= alto) {
+						   g->DrawLine(penMarcas, (float)(centroX - 4), posY, (float)(centroX + 4), posY);
+						   g->DrawString(i.ToString(), fuente, brochaBlanca, centroX + 6, posY - 6);
+					   }
+				   }
+				   else {
+					   float posX = centroX + (float)(i * escala);
+					   if (posX >= 0 && posX <= ancho && (escala > 5.0)) {
+						   g->DrawLine(penMarcas, posX, (float)(centroY - 2), posX, (float)(centroY + 2));
+					   }
+					   float posY = centroY - (float)(i * escala);
+					   if (posY >= 0 && posY <= alto && (escala > 5.0)) {
+						   g->DrawLine(penMarcas, (float)(centroX - 2), posY, (float)(centroX + 2), posY);
+					   }
+				   }
 			   }
 		   }
 
 		   bool validarCampoRotacion(String^ campoAngulo) {
 			   try
 			   {
-				   double angulo = Convert::ToDouble(campoAngulo);
+				   double angulo = Double::Parse(campoAngulo, System::Globalization::CultureInfo::InvariantCulture);
 				   const double EPS = 1e-9;
 				   return (std::abs(angulo) > EPS) && (angulo >= -360.0 && angulo <= 360.0);
 			   }
@@ -689,8 +764,9 @@ private: System::Windows::Forms::Label^ lbCoordXPHomotencia;
 		   bool validarCampoReHomotencia(String^ factor) {
 			   try
 			   {
-				   double k = Convert::ToDouble(factor);
-				   return (k && k != 0);
+				   double k = Double::Parse(factor, System::Globalization::CultureInfo::InvariantCulture);
+				   const double EPS = 1e-9;
+				   return (std::abs(k) > EPS);
 			   }
 			   catch (Exception^ e) {
 				   Console::WriteLine("Error: La cadena contiene caracteres no numericos.");
@@ -699,15 +775,15 @@ private: System::Windows::Forms::Label^ lbCoordXPHomotencia;
 		   }
 
 		   bool ValidarCompoCordenada(String^ texto) {
-			   String^ patron = "^[+-]?\\d+(,\\s*[+-]?\\d+)*$";
+			   String^ patron = "^[+-]?\\d+(\\.\\d+)?(,\\s*[+-]?\\d+(\\.\\d+)?)*$";
 			   return System::Text::RegularExpressions::Regex::IsMatch(texto, patron);
 		   }
 
 		   bool validadarCampoEcuacionLineal(String^ pendiente, String^ coordenadaOrigen) {
 			   try
 			   {
-				   double intPendiente = Convert::ToDouble(pendiente);
-				   double intCoordeanadaOrigen = Convert::ToDouble(coordenadaOrigen);
+				   double intPendiente = Double::Parse(pendiente, System::Globalization::CultureInfo::InvariantCulture);
+				   double intCoordeanadaOrigen = Double::Parse(coordenadaOrigen, System::Globalization::CultureInfo::InvariantCulture);
 				   return true;
 			   }
 			   catch (Exception^ e) {
@@ -715,6 +791,16 @@ private: System::Windows::Forms::Label^ lbCoordXPHomotencia;
 			   }
 			   return false;
 		   }
+
+	private: void limpiarFigura(Figura* fig) {
+		if (fig && fig->getNumeroPuntos() > 0) {
+			auto antiguos = fig->getPuntos();
+			for (auto p : antiguos) {
+				delete p;
+			}
+			fig->limpiarPuntos();
+		}
+	}
 
 	private: System::Boolean incializarPuntos(Figura* figura, String^ coordsX, String^ coordsY) {
 		if (figura == nullptr) return false;
@@ -727,20 +813,14 @@ private: System::Windows::Forms::Label^ lbCoordXPHomotencia;
 			return false;
 		}
 
-		if (figura->getNumeroPuntos() > 0) {
-			auto antiguos = figura->getPuntos();
-			for (auto p : antiguos) {
-				delete p;
-			}
-			figura->limpiarPuntos();
-		}
+		limpiarFigura(figura);
 
 		int nCordenadas = partesX->Length;
 		try {
 			for (int i = 0; i < nCordenadas; i++) {
-				int x = Int32::Parse(partesX[i]->Trim());
-				int y = Int32::Parse(partesY[i]->Trim());
-				int yRelative = -y;
+				double x = Double::Parse(partesX[i]->Trim(), System::Globalization::CultureInfo::InvariantCulture);
+				double y = Double::Parse(partesY[i]->Trim(), System::Globalization::CultureInfo::InvariantCulture);
+				double yRelative = -y;
 
 				figura->agregarPunto(new Punto(x, yRelative));
 			}
@@ -759,8 +839,8 @@ private: System::Windows::Forms::Label^ lbCoordXPHomotencia;
 	}
 
 	private: System::Void btnTriangulo_Click(System::Object^ sender, System::EventArgs^ e) {
-		txtCordenadasX->Text = "0, 5, 5";
-		txtCordenadasY->Text = "0, 0, 5";
+		txtCordenadasX->Text = "2, 6, 2";
+		txtCordenadasY->Text = "2, 2, 6";
 		btnDibujarFigura_Click(sender, e);
 	}
 
@@ -775,7 +855,7 @@ private: System::Windows::Forms::Label^ lbCoordXPHomotencia;
 		String^ textBoxY = txtCordenadasY->Text;
 
 		if (!ValidarCompoCordenada(textBoxX) || !ValidarCompoCordenada(textBoxY)) {
-			MessageBox::Show("Datos en el los Compos cordenada No validos. Se debe seguir el formato (15,91,15,45), por ejemplo");
+			MessageBox::Show("Datos en el los Compos cordenada No validos. Se debe seguir el formato (1.5, -2, 4.8), por ejemplo");
 			return;
 		}
 
@@ -810,7 +890,7 @@ private: System::Windows::Forms::Label^ lbCoordXPHomotencia;
 		esHomotecia = false;
 		guardarEstadoActual();
 
-		double valorAngulo = Convert::ToDouble(anguloRotacion);
+		double valorAngulo = Double::Parse(anguloRotacion, System::Globalization::CultureInfo::InvariantCulture);
 		double incremento = valorAngulo / 24.0;
 
 		Trasformacion* rotarFigura = new Rotacion(figuraActual, incremento);
@@ -836,8 +916,8 @@ private: System::Windows::Forms::Label^ lbCoordXPHomotencia;
 				return;
 			}
 
-			double m_unit = Convert::ToDouble(pendiente);
-			double b_unit = Convert::ToDouble(cordenadaOrigen);
+			double m_unit = Double::Parse(pendiente, System::Globalization::CultureInfo::InvariantCulture);
+			double b_unit = Double::Parse(cordenadaOrigen, System::Globalization::CultureInfo::InvariantCulture);
 
 			double m_pix = -m_unit;
 			double b_pix = -b_unit;
@@ -873,7 +953,8 @@ private: System::Windows::Forms::Label^ lbCoordXPHomotencia;
 		esHomotecia = true;
 		guardarEstadoActual();
 
-		double factorEscala = Convert::ToDouble(strFactor);
+		
+		double factorEscala = Double::Parse(strFactor, System::Globalization::CultureInfo::InvariantCulture);
 		double centroHomotenciaX = Convert::ToDouble(txtCoordXPHomotencia->Text);
 		double centroHomotenciaY = Convert::ToDouble(txtCoordYPHomotencia->Text);
 
@@ -919,12 +1000,38 @@ private: System::Windows::Forms::Label^ lbCoordXPHomotencia;
 	}
 
 	private: System::Void btnRestablecerFigura_Click(System::Object^ sender, System::EventArgs^ e) {
-		if (figuraAnterior) {
+		if (figuraAnterior && figuraActual->getNumeroPuntos() > 0) {
 			esHomotecia = false;
-			delete figuraActual;
-			figuraActual = figuraAnterior->clonarFigura();
-			pnlDibujar->Refresh();
+			TransRestablecer* transRes = new TransRestablecer(figuraActual, figuraAnterior);
+			this->animacion = new Animacion(transRes, dibujador, 24, 1);
+			timer1->Start();
 		}
+	}
+
+	private: System::Void btnReiniciar_Click(System::Object^ sender, System::EventArgs^ e) {
+		if (animacion != nullptr) {
+			timer1->Stop();
+			delete animacion;
+			animacion = nullptr;
+		}
+		if (figuraActual != nullptr) limpiarFigura(figuraActual);
+		if (figuraAnterior != nullptr) limpiarFigura(figuraAnterior);
+		if (figuraBaseOriginal != nullptr) {
+			delete figuraBaseOriginal;
+			figuraBaseOriginal = nullptr;
+		}
+
+		esHomotecia = false;
+		mostrarRecta = false;
+
+		txtCordenadasX->Text = "";
+		txtCordenadasY->Text = "";
+		txtAnguloRotacion->Text = "";
+		txtFactor->Text = "";
+		txtPendiente->Text = "";
+		txtCordenadaOrigen->Text = "";
+
+		pnlDibujar->Refresh();
 	}
 
 	private: System::Void cboEjeReflexion_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
