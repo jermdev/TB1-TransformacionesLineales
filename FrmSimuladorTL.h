@@ -131,6 +131,7 @@ namespace TB1TransformacionesLineales {
 		double cachedEscalaGrid;
 	private: System::Windows::Forms::Timer^ timer1;
 	private: System::Windows::Forms::Button^ btnRestablecerFigura;
+	private: System::Windows::Forms::Button^ btnReiniciar;
 	private: System::Windows::Forms::TextBox^ txtPendiente;
 	private: System::Windows::Forms::Label^ lbEcuacionRecta;
 	private: System::Windows::Forms::Label^ lbPendiente;
@@ -178,6 +179,7 @@ namespace TB1TransformacionesLineales {
 			   this->pnlDibujar = (gcnew System::Windows::Forms::Panel());
 			   this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
 			   this->btnRestablecerFigura = (gcnew System::Windows::Forms::Button());
+			   this->btnReiniciar = (gcnew System::Windows::Forms::Button());
 			   this->grpHomotecia->SuspendLayout();
 			   this->groupBox2->SuspendLayout();
 			   this->groupBox3->SuspendLayout();
@@ -416,15 +418,24 @@ namespace TB1TransformacionesLineales {
 
 			   this->btnRestablecerFigura->Location = System::Drawing::Point(12, 675);
 			   this->btnRestablecerFigura->Name = L"btnRestablecerFigura";
-			   this->btnRestablecerFigura->Size = System::Drawing::Size(135, 35);
+			   this->btnRestablecerFigura->Size = System::Drawing::Size(115, 35);
 			   this->btnRestablecerFigura->TabIndex = 3;
-			   this->btnRestablecerFigura->Text = L"Restablecer Figura";
+			   this->btnRestablecerFigura->Text = L"Deshacer";
 			   this->btnRestablecerFigura->UseVisualStyleBackColor = true;
 			   this->btnRestablecerFigura->Click += gcnew System::EventHandler(this, &FrmSimuladorTL::btnRestablecerFigura_Click);
+
+			   this->btnReiniciar->Location = System::Drawing::Point(135, 675);
+			   this->btnReiniciar->Name = L"btnReiniciar";
+			   this->btnReiniciar->Size = System::Drawing::Size(115, 35);
+			   this->btnReiniciar->TabIndex = 4;
+			   this->btnReiniciar->Text = L"Borrar Todo";
+			   this->btnReiniciar->UseVisualStyleBackColor = true;
+			   this->btnReiniciar->Click += gcnew System::EventHandler(this, &FrmSimuladorTL::btnReiniciar_Click);
 
 			   this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
 			   this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			   this->ClientSize = System::Drawing::Size(1043, 734);
+			   this->Controls->Add(this->btnReiniciar);
 			   this->Controls->Add(this->pnlDibujar);
 			   this->Controls->Add(this->btnRestablecerFigura);
 			   this->Controls->Add(this->grpHomotecia);
@@ -612,7 +623,7 @@ namespace TB1TransformacionesLineales {
 		   bool validarCampoRotacion(String^ campoAngulo) {
 			   try
 			   {
-				   double angulo = Convert::ToDouble(campoAngulo);
+				   double angulo = Double::Parse(campoAngulo, System::Globalization::CultureInfo::InvariantCulture);
 				   const double EPS = 1e-9;
 				   return (std::abs(angulo) > EPS) && (angulo >= -360.0 && angulo <= 360.0);
 			   }
@@ -626,8 +637,9 @@ namespace TB1TransformacionesLineales {
 		   bool validarCampoReHomotencia(String^ factor) {
 			   try
 			   {
-				   int k = Convert::ToInt32(factor);
-				   return (k && k != 0);
+				   double k = Double::Parse(factor, System::Globalization::CultureInfo::InvariantCulture);
+				   const double EPS = 1e-9;
+				   return (std::abs(k) > EPS);
 			   }
 			   catch (Exception^ e) {
 				   Console::WriteLine("Error: La cadena contiene caracteres no numericos.");
@@ -636,15 +648,15 @@ namespace TB1TransformacionesLineales {
 		   }
 
 		   bool ValidarCompoCordenada(String^ texto) {
-			   String^ patron = "^[+-]?\\d+(,\\s*[+-]?\\d+)*$";
+			   String^ patron = "^[+-]?\\d+(\\.\\d+)?(,\\s*[+-]?\\d+(\\.\\d+)?)*$";
 			   return System::Text::RegularExpressions::Regex::IsMatch(texto, patron);
 		   }
 
 		   bool validadarCampoEcuacionLineal(String^ pendiente, String^ coordenadaOrigen) {
 			   try
 			   {
-				   double intPendiente = Convert::ToDouble(pendiente);
-				   double intCoordeanadaOrigen = Convert::ToDouble(coordenadaOrigen);
+				   double intPendiente = Double::Parse(pendiente, System::Globalization::CultureInfo::InvariantCulture);
+				   double intCoordeanadaOrigen = Double::Parse(coordenadaOrigen, System::Globalization::CultureInfo::InvariantCulture);
 				   return true;
 			   }
 			   catch (Exception^ e) {
@@ -652,6 +664,16 @@ namespace TB1TransformacionesLineales {
 			   }
 			   return false;
 		   }
+
+	private: void limpiarFigura(Figura* fig) {
+		if (fig && fig->getNumeroPuntos() > 0) {
+			auto antiguos = fig->getPuntos();
+			for (auto p : antiguos) {
+				delete p;
+			}
+			fig->limpiarPuntos();
+		}
+	}
 
 	private: System::Boolean incializarPuntos(Figura* figura, String^ coordsX, String^ coordsY) {
 		if (figura == nullptr) return false;
@@ -664,20 +686,14 @@ namespace TB1TransformacionesLineales {
 			return false;
 		}
 
-		if (figura->getNumeroPuntos() > 0) {
-			auto antiguos = figura->getPuntos();
-			for (auto p : antiguos) {
-				delete p;
-			}
-			figura->limpiarPuntos();
-		}
+		limpiarFigura(figura);
 
 		int nCordenadas = partesX->Length;
 		try {
 			for (int i = 0; i < nCordenadas; i++) {
-				int x = Int32::Parse(partesX[i]->Trim());
-				int y = Int32::Parse(partesY[i]->Trim());
-				int yRelative = -y;
+				double x = Double::Parse(partesX[i]->Trim(), System::Globalization::CultureInfo::InvariantCulture);
+				double y = Double::Parse(partesY[i]->Trim(), System::Globalization::CultureInfo::InvariantCulture);
+				double yRelative = -y;
 
 				figura->agregarPunto(new Punto(x, yRelative));
 			}
@@ -712,7 +728,7 @@ namespace TB1TransformacionesLineales {
 		String^ textBoxY = txtCordenadasY->Text;
 
 		if (!ValidarCompoCordenada(textBoxX) || !ValidarCompoCordenada(textBoxY)) {
-			MessageBox::Show("Datos en el los Compos cordenada No validos. Se debe seguir el formato (15,91,15,45), por ejemplo");
+			MessageBox::Show("Datos en el los Compos cordenada No validos. Se debe seguir el formato (1.5, -2, 4.8), por ejemplo");
 			return;
 		}
 
@@ -747,7 +763,7 @@ namespace TB1TransformacionesLineales {
 		esHomotecia = false;
 		guardarEstadoActual();
 
-		double valorAngulo = Convert::ToDouble(anguloRotacion);
+		double valorAngulo = Double::Parse(anguloRotacion, System::Globalization::CultureInfo::InvariantCulture);
 		double incremento = valorAngulo / 24.0;
 
 		Trasformacion* rotarFigura = new Rotacion(figuraActual, incremento);
@@ -773,8 +789,8 @@ namespace TB1TransformacionesLineales {
 				return;
 			}
 
-			double m_unit = Convert::ToDouble(pendiente);
-			double b_unit = Convert::ToDouble(cordenadaOrigen);
+			double m_unit = Double::Parse(pendiente, System::Globalization::CultureInfo::InvariantCulture);
+			double b_unit = Double::Parse(cordenadaOrigen, System::Globalization::CultureInfo::InvariantCulture);
 
 			double m_pix = -m_unit;
 			double b_pix = -b_unit;
@@ -809,7 +825,7 @@ namespace TB1TransformacionesLineales {
 		esHomotecia = true;
 		guardarEstadoActual();
 
-		double factorEscala = Convert::ToDouble(strFactor);
+		double factorEscala = Double::Parse(strFactor, System::Globalization::CultureInfo::InvariantCulture);
 
 		int tipoEscalado = 0;
 		if (rbtnX->Checked) {
@@ -847,12 +863,38 @@ namespace TB1TransformacionesLineales {
 	}
 
 	private: System::Void btnRestablecerFigura_Click(System::Object^ sender, System::EventArgs^ e) {
-		if (figuraAnterior) {
+		if (figuraAnterior && figuraActual->getNumeroPuntos() > 0) {
 			esHomotecia = false;
 			TransRestablecer* transRes = new TransRestablecer(figuraActual, figuraAnterior);
 			this->animacion = new Animacion(transRes, dibujador, 24, 1);
 			timer1->Start();
 		}
+	}
+
+	private: System::Void btnReiniciar_Click(System::Object^ sender, System::EventArgs^ e) {
+		if (animacion != nullptr) {
+			timer1->Stop();
+			delete animacion;
+			animacion = nullptr;
+		}
+		if (figuraActual != nullptr) limpiarFigura(figuraActual);
+		if (figuraAnterior != nullptr) limpiarFigura(figuraAnterior);
+		if (figuraBaseOriginal != nullptr) {
+			delete figuraBaseOriginal;
+			figuraBaseOriginal = nullptr;
+		}
+
+		esHomotecia = false;
+		mostrarRecta = false;
+
+		txtCordenadasX->Text = "";
+		txtCordenadasY->Text = "";
+		txtAnguloRotacion->Text = "";
+		txtFactor->Text = "";
+		txtPendiente->Text = "";
+		txtCordenadaOrigen->Text = "";
+
+		pnlDibujar->Refresh();
 	}
 
 	private: System::Void cboEjeReflexion_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
