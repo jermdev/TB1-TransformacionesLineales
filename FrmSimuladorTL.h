@@ -8,6 +8,25 @@
 #include "Animacion.h"
 #include "Homotecia.h"
 
+class TransRestablecer : public Trasformacion {
+private:
+	Figura* estadoAnterior;
+public:
+	TransRestablecer(Figura* actual, Figura* anterior) : Trasformacion(actual) {
+		this->estadoAnterior = anterior;
+	}
+	void trasformacion() override {
+		auto ptsAct = getFigura()->getPuntos();
+		auto ptsAnt = estadoAnterior->getPuntos();
+		if (ptsAct.size() == ptsAnt.size()) {
+			for (size_t i = 0; i < ptsAct.size(); i++) {
+				ptsAct[i]->setX(ptsAnt[i]->getX());
+				ptsAct[i]->setY(ptsAnt[i]->getY());
+			}
+		}
+	}
+};
+
 namespace TB1TransformacionesLineales {
 
 	using namespace System;
@@ -27,7 +46,8 @@ namespace TB1TransformacionesLineales {
 		{
 			InitializeComponent();
 			dibujador = new Dibujador();
-			escalaGrid = 30;
+			escalaGrid = 30.0;
+			cachedEscalaGrid = 0.0;
 			mostrarRecta = false;
 			esHomotecia = false;
 			reflecM = 0.0;
@@ -97,9 +117,6 @@ namespace TB1TransformacionesLineales {
 	private: System::ComponentModel::IContainer^ components;
 
 	private:
-		/// <summary>
-		/// Variable del dise?ador necesaria.
-		/// </summary>
 		Bitmap^ cachedPnlDibujar;
 		Figura* figuraAnterior;
 		Figura* figuraActual;
@@ -110,7 +127,8 @@ namespace TB1TransformacionesLineales {
 		double reflecB;
 		bool mostrarRecta;
 		bool esHomotecia;
-		int escalaGrid;
+		double escalaGrid;
+		double cachedEscalaGrid;
 	private: System::Windows::Forms::Timer^ timer1;
 	private: System::Windows::Forms::Button^ btnRestablecerFigura;
 	private: System::Windows::Forms::TextBox^ txtPendiente;
@@ -428,18 +446,41 @@ namespace TB1TransformacionesLineales {
 		   }
 #pragma endregion
 
+		   void AjustarCamara() {
+			   double maxVal = 9.0;
+
+			   if (figuraBaseOriginal != nullptr) {
+				   for (auto p : figuraBaseOriginal->getPuntos()) {
+					   if (std::abs(p->getX()) > maxVal) maxVal = std::abs(p->getX());
+					   if (std::abs(p->getY()) > maxVal) maxVal = std::abs(p->getY());
+				   }
+			   }
+			   if (figuraActual != nullptr) {
+				   for (auto p : figuraActual->getPuntos()) {
+					   if (std::abs(p->getX()) > maxVal) maxVal = std::abs(p->getX());
+					   if (std::abs(p->getY()) > maxVal) maxVal = std::abs(p->getY());
+				   }
+			   }
+
+			   maxVal += 1.0;
+
+			   double minDimension = (double)Math::Min(pnlDibujar->Width / 2, pnlDibujar->Height / 2);
+			   escalaGrid = minDimension / maxVal;
+		   }
+
 	private: void CreateCachedBackground()
 	{
 		if (pnlDibujar->Width <= 0 || pnlDibujar->Height <= 0) return;
 
 		if (cachedPnlDibujar != nullptr) {
-			if (cachedPnlDibujar->Width == pnlDibujar->Width && cachedPnlDibujar->Height == pnlDibujar->Height) {
+			if (cachedPnlDibujar->Width == pnlDibujar->Width && cachedPnlDibujar->Height == pnlDibujar->Height && cachedEscalaGrid == escalaGrid) {
 				return;
 			}
 			delete cachedPnlDibujar;
 			cachedPnlDibujar = nullptr;
 		}
 
+		cachedEscalaGrid = escalaGrid;
 		cachedPnlDibujar = gcnew Bitmap(pnlDibujar->Width, pnlDibujar->Height);
 		Graphics^ g = Graphics::FromImage(cachedPnlDibujar);
 
@@ -464,7 +505,7 @@ namespace TB1TransformacionesLineales {
 
 			   int centroX = ancho / 2;
 			   int centroY = alto / 2;
-			   double escala = static_cast<double>(escalaGrid);
+			   double escala = escalaGrid;
 
 			   double xUnitMin = -static_cast<double>(centroX) / escala;
 			   double xUnitMax = static_cast<double>(centroX) / escala;
@@ -486,6 +527,8 @@ namespace TB1TransformacionesLineales {
 		   }
 
 	private: System::Void pnlDibujar_Paint(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e) {
+		AjustarCamara();
+
 		Bitmap^ buffer = gcnew Bitmap(pnlDibujar->Width, pnlDibujar->Height);
 		Graphics^ gBuffer = Graphics::FromImage(buffer);
 
@@ -498,10 +541,10 @@ namespace TB1TransformacionesLineales {
 
 		if (figuraActual != nullptr && dibujador != nullptr) {
 			if (figuraBaseOriginal != nullptr) {
-				dibujador->DibujarFiguraComparativa(gBuffer, figuraBaseOriginal, figuraActual, (double)escalaGrid, esHomotecia);
+				dibujador->DibujarFiguraComparativa(gBuffer, figuraBaseOriginal, figuraActual, escalaGrid, esHomotecia);
 			}
 			else {
-				dibujador->DibujarFiguraNormal(gBuffer, figuraActual, (double)escalaGrid);
+				dibujador->DibujarFiguraNormal(gBuffer, figuraActual, escalaGrid);
 			}
 		}
 
@@ -514,7 +557,7 @@ namespace TB1TransformacionesLineales {
 		   void DibujarEjesConNumeros(Graphics^ g, int ancho, int alto) {
 			   int centroX = ancho / 2;
 			   int centroY = alto / 2;
-			   int escala = 30;
+			   double escala = escalaGrid;
 
 			   Pen^ penEjes = gcnew Pen(Color::White, 2.0f);
 			   g->DrawLine(penEjes, 0.0f, (float)centroY, (float)ancho, (float)centroY);
@@ -524,22 +567,45 @@ namespace TB1TransformacionesLineales {
 			   SolidBrush^ brochaBlanca = gcnew SolidBrush(Color::White);
 			   Pen^ penMarcas = gcnew Pen(Color::LightGray, 1.0f);
 
-			   for (int i = -15; i <= 15; i++) {
-				   if (i == 0) continue;
-
-				   int posX = centroX + (i * escala);
-
-				   g->DrawLine(penMarcas, (float)posX, (float)(centroY - 3), (float)posX, (float)(centroY + 3));
-				   g->DrawString(i.ToString(), fuente, brochaBlanca, posX - 6, centroY + 5);
+			   int step = 1;
+			   while ((step * escala) < 20.0) {
+				   if (step == 1) step = 2;
+				   else if (step == 2) step = 5;
+				   else if (step == 5) step = 10;
+				   else if (step == 10) step = 20;
+				   else if (step == 20) step = 50;
+				   else if (step == 50) step = 100;
+				   else step += 100;
 			   }
 
-			   for (int i = -15; i <= 15; i++) {
+			   int maxMarcas = (int)((Math::Max(ancho, alto) / 2) / escala) + 1;
+
+			   for (int i = -maxMarcas; i <= maxMarcas; i++) {
 				   if (i == 0) continue;
 
-				   int posY = centroY - (i * escala);
+				   if (i % step == 0) {
+					   float posX = centroX + (float)(i * escala);
+					   if (posX >= 0 && posX <= ancho) {
+						   g->DrawLine(penMarcas, posX, (float)(centroY - 4), posX, (float)(centroY + 4));
+						   g->DrawString(i.ToString(), fuente, brochaBlanca, posX - 8, centroY + 6);
+					   }
 
-				   g->DrawLine(penMarcas, (float)(centroX - 3), (float)posY, (float)(centroX + 3), (float)posY);
-				   g->DrawString(i.ToString(), fuente, brochaBlanca, centroX + 5, posY - 6);
+					   float posY = centroY - (float)(i * escala);
+					   if (posY >= 0 && posY <= alto) {
+						   g->DrawLine(penMarcas, (float)(centroX - 4), posY, (float)(centroX + 4), posY);
+						   g->DrawString(i.ToString(), fuente, brochaBlanca, centroX + 6, posY - 6);
+					   }
+				   }
+				   else {
+					   float posX = centroX + (float)(i * escala);
+					   if (posX >= 0 && posX <= ancho && (escala > 5.0)) {
+						   g->DrawLine(penMarcas, posX, (float)(centroY - 2), posX, (float)(centroY + 2));
+					   }
+					   float posY = centroY - (float)(i * escala);
+					   if (posY >= 0 && posY <= alto && (escala > 5.0)) {
+						   g->DrawLine(penMarcas, (float)(centroX - 2), posY, (float)(centroX + 2), posY);
+					   }
+				   }
 			   }
 		   }
 
@@ -630,8 +696,8 @@ namespace TB1TransformacionesLineales {
 	}
 
 	private: System::Void btnTriangulo_Click(System::Object^ sender, System::EventArgs^ e) {
-		txtCordenadasX->Text = "0, 5, 5";
-		txtCordenadasY->Text = "0, 0, 5";
+		txtCordenadasX->Text = "2, 6, 2";
+		txtCordenadasY->Text = "2, 2, 6";
 		btnDibujarFigura_Click(sender, e);
 	}
 
@@ -783,9 +849,9 @@ namespace TB1TransformacionesLineales {
 	private: System::Void btnRestablecerFigura_Click(System::Object^ sender, System::EventArgs^ e) {
 		if (figuraAnterior) {
 			esHomotecia = false;
-			delete figuraActual;
-			figuraActual = figuraAnterior->clonarFigura();
-			pnlDibujar->Refresh();
+			TransRestablecer* transRes = new TransRestablecer(figuraActual, figuraAnterior);
+			this->animacion = new Animacion(transRes, dibujador, 24, 1);
+			timer1->Start();
 		}
 	}
 
