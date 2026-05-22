@@ -36,6 +36,10 @@ namespace TB1TransformacionesLineales {
 			int x = pnlDibujar->Width;
 			int y = pnlDibujar->Height;
 
+			txtCoordXPHomotencia->Text = Convert::ToString(0);
+			txtCoordYPHomotencia->Text = Convert::ToString(0);
+
+
 			figuraAnterior = new Figura(x / 2, y / 2);
 			figuraActual = new Figura(x / 2, y / 2);
 			figuraBaseOriginal = nullptr;
@@ -120,6 +124,16 @@ namespace TB1TransformacionesLineales {
 	private: System::Windows::Forms::TextBox^ txtCordenadaOrigen;
 	private: System::Windows::Forms::Button^ btnTriangulo;
 	private: System::Windows::Forms::Button^ btnCuadrado;
+	private: System::Windows::Forms::Label^ lbPuntoHomotencia;
+private: System::Windows::Forms::TextBox^ txtCoordYPHomotencia;
+
+private: System::Windows::Forms::TextBox^ txtCoordXPHomotencia;
+
+private: System::Windows::Forms::Label^ lbCoordYPHomotencia;
+private: System::Windows::Forms::Label^ lbCoordXPHomotencia;
+
+
+
 		   Animacion* animacion;
 
 #pragma region Windows Form Designer generated code
@@ -131,6 +145,11 @@ namespace TB1TransformacionesLineales {
 		   {
 			   this->components = (gcnew System::ComponentModel::Container());
 			   this->grpHomotecia = (gcnew System::Windows::Forms::GroupBox());
+			   this->lbCoordYPHomotencia = (gcnew System::Windows::Forms::Label());
+			   this->lbCoordXPHomotencia = (gcnew System::Windows::Forms::Label());
+			   this->txtCoordYPHomotencia = (gcnew System::Windows::Forms::TextBox());
+			   this->txtCoordXPHomotencia = (gcnew System::Windows::Forms::TextBox());
+			   this->lbPuntoHomotencia = (gcnew System::Windows::Forms::Label());
 			   this->txtFactor = (gcnew System::Windows::Forms::TextBox());
 			   this->lbFactor = (gcnew System::Windows::Forms::Label());
 			   this->rbtnY = (gcnew System::Windows::Forms::RadioButton());
@@ -165,68 +184,130 @@ namespace TB1TransformacionesLineales {
 			   this->groupBox3->SuspendLayout();
 			   this->grpFigura->SuspendLayout();
 			   this->SuspendLayout();
-
+			   // 
+			   // grpHomotecia
+			   // 
 			   this->grpHomotecia->BackColor = System::Drawing::SystemColors::GradientActiveCaption;
+			   this->grpHomotecia->Controls->Add(this->lbCoordYPHomotencia);
+			   this->grpHomotecia->Controls->Add(this->lbCoordXPHomotencia);
+			   this->grpHomotecia->Controls->Add(this->txtCoordYPHomotencia);
+			   this->grpHomotecia->Controls->Add(this->txtCoordXPHomotencia);
+			   this->grpHomotecia->Controls->Add(this->lbPuntoHomotencia);
 			   this->grpHomotecia->Controls->Add(this->txtFactor);
 			   this->grpHomotecia->Controls->Add(this->lbFactor);
 			   this->grpHomotecia->Controls->Add(this->rbtnY);
 			   this->grpHomotecia->Controls->Add(this->rbtnX);
 			   this->grpHomotecia->Controls->Add(this->radioButton1);
 			   this->grpHomotecia->Controls->Add(this->btnHomotencia);
-			   this->grpHomotecia->Location = System::Drawing::Point(18, 515);
+			   this->grpHomotecia->Location = System::Drawing::Point(18, 489);
 			   this->grpHomotecia->Name = L"grpHomotecia";
-			   this->grpHomotecia->Size = System::Drawing::Size(253, 142);
+			   this->grpHomotecia->Size = System::Drawing::Size(253, 168);
 			   this->grpHomotecia->TabIndex = 0;
 			   this->grpHomotecia->TabStop = false;
 			   this->grpHomotecia->Text = L"Homotecia";
-
-			   this->txtFactor->Location = System::Drawing::Point(149, 37);
+			   // 
+			   // lbCoordYPHomotencia
+			   // 
+			   this->lbCoordYPHomotencia->AutoSize = true;
+			   this->lbCoordYPHomotencia->Location = System::Drawing::Point(186, 40);
+			   this->lbCoordYPHomotencia->Name = L"lbCoordYPHomotencia";
+			   this->lbCoordYPHomotencia->Size = System::Drawing::Size(19, 16);
+			   this->lbCoordYPHomotencia->TabIndex = 11;
+			   this->lbCoordYPHomotencia->Text = L"Y:";
+			   // 
+			   // lbCoordXPHomotencia
+			   // 
+			   this->lbCoordXPHomotencia->AutoSize = true;
+			   this->lbCoordXPHomotencia->Location = System::Drawing::Point(132, 37);
+			   this->lbCoordXPHomotencia->Name = L"lbCoordXPHomotencia";
+			   this->lbCoordXPHomotencia->Size = System::Drawing::Size(18, 16);
+			   this->lbCoordXPHomotencia->TabIndex = 10;
+			   this->lbCoordXPHomotencia->Text = L"X:";
+			   // 
+			   // txtCoordYPHomotencia
+			   // 
+			   this->txtCoordYPHomotencia->Location = System::Drawing::Point(211, 34);
+			   this->txtCoordYPHomotencia->Name = L"txtCoordYPHomotencia";
+			   this->txtCoordYPHomotencia->Size = System::Drawing::Size(30, 22);
+			   this->txtCoordYPHomotencia->TabIndex = 9;
+			   // 
+			   // txtCoordXPHomotencia
+			   // 
+			   this->txtCoordXPHomotencia->Location = System::Drawing::Point(154, 34);
+			   this->txtCoordXPHomotencia->Name = L"txtCoordXPHomotencia";
+			   this->txtCoordXPHomotencia->Size = System::Drawing::Size(26, 22);
+			   this->txtCoordXPHomotencia->TabIndex = 8;
+			   // 
+			   // lbPuntoHomotencia
+			   // 
+			   this->lbPuntoHomotencia->AutoSize = true;
+			   this->lbPuntoHomotencia->Location = System::Drawing::Point(7, 37);
+			   this->lbPuntoHomotencia->Name = L"lbPuntoHomotencia";
+			   this->lbPuntoHomotencia->Size = System::Drawing::Size(125, 16);
+			   this->lbPuntoHomotencia->TabIndex = 7;
+			   this->lbPuntoHomotencia->Text = L"lbPuntoHomotencia";
+			   // 
+			   // txtFactor
+			   // 
+			   this->txtFactor->Location = System::Drawing::Point(143, 72);
 			   this->txtFactor->Name = L"txtFactor";
 			   this->txtFactor->Size = System::Drawing::Size(84, 22);
 			   this->txtFactor->TabIndex = 6;
-
+			   // 
+			   // lbFactor
+			   // 
 			   this->lbFactor->AutoSize = true;
-			   this->lbFactor->Location = System::Drawing::Point(7, 40);
+			   this->lbFactor->Location = System::Drawing::Point(7, 72);
 			   this->lbFactor->Name = L"lbFactor";
 			   this->lbFactor->Size = System::Drawing::Size(48, 16);
 			   this->lbFactor->TabIndex = 5;
 			   this->lbFactor->Text = L"Factor:";
-
+			   // 
+			   // rbtnY
+			   // 
 			   this->rbtnY->AutoSize = true;
-			   this->rbtnY->Location = System::Drawing::Point(149, 79);
+			   this->rbtnY->Location = System::Drawing::Point(154, 100);
 			   this->rbtnY->Name = L"rbtnY";
 			   this->rbtnY->Size = System::Drawing::Size(37, 20);
 			   this->rbtnY->TabIndex = 3;
 			   this->rbtnY->TabStop = true;
 			   this->rbtnY->Text = L"Y";
 			   this->rbtnY->UseVisualStyleBackColor = true;
-
+			   // 
+			   // rbtnX
+			   // 
 			   this->rbtnX->AutoSize = true;
-			   this->rbtnX->Location = System::Drawing::Point(107, 79);
+			   this->rbtnX->Location = System::Drawing::Point(107, 100);
 			   this->rbtnX->Name = L"rbtnX";
 			   this->rbtnX->Size = System::Drawing::Size(36, 20);
 			   this->rbtnX->TabIndex = 2;
 			   this->rbtnX->TabStop = true;
 			   this->rbtnX->Text = L"X";
 			   this->rbtnX->UseVisualStyleBackColor = true;
-
+			   // 
+			   // radioButton1
+			   // 
 			   this->radioButton1->AutoSize = true;
-			   this->radioButton1->Location = System::Drawing::Point(6, 79);
+			   this->radioButton1->Location = System::Drawing::Point(6, 100);
 			   this->radioButton1->Name = L"radioButton1";
 			   this->radioButton1->Size = System::Drawing::Size(84, 20);
 			   this->radioButton1->TabIndex = 1;
 			   this->radioButton1->TabStop = true;
 			   this->radioButton1->Text = L"Simetrico";
 			   this->radioButton1->UseVisualStyleBackColor = true;
-
-			   this->btnHomotencia->Location = System::Drawing::Point(6, 105);
+			   // 
+			   // btnHomotencia
+			   // 
+			   this->btnHomotencia->Location = System::Drawing::Point(6, 136);
 			   this->btnHomotencia->Name = L"btnHomotencia";
 			   this->btnHomotencia->Size = System::Drawing::Size(241, 26);
 			   this->btnHomotencia->TabIndex = 0;
 			   this->btnHomotencia->Text = L"Aplicar";
 			   this->btnHomotencia->UseVisualStyleBackColor = true;
 			   this->btnHomotencia->Click += gcnew System::EventHandler(this, &FrmSimuladorTL::btnHomotencia_Click);
-
+			   // 
+			   // groupBox2
+			   // 
 			   this->groupBox2->BackColor = System::Drawing::SystemColors::GradientActiveCaption;
 			   this->groupBox2->Controls->Add(this->txtCordenadaOrigen);
 			   this->groupBox2->Controls->Add(this->lbCordenadaOrigen);
@@ -241,13 +322,17 @@ namespace TB1TransformacionesLineales {
 			   this->groupBox2->TabIndex = 1;
 			   this->groupBox2->TabStop = false;
 			   this->groupBox2->Text = L"Reflexion";
-
+			   // 
+			   // txtCordenadaOrigen
+			   // 
 			   this->txtCordenadaOrigen->Location = System::Drawing::Point(141, 94);
 			   this->txtCordenadaOrigen->Name = L"txtCordenadaOrigen";
 			   this->txtCordenadaOrigen->Size = System::Drawing::Size(56, 22);
 			   this->txtCordenadaOrigen->TabIndex = 16;
 			   this->txtCordenadaOrigen->Visible = false;
-
+			   // 
+			   // lbCordenadaOrigen
+			   // 
 			   this->lbCordenadaOrigen->AutoSize = true;
 			   this->lbCordenadaOrigen->Location = System::Drawing::Point(114, 97);
 			   this->lbCordenadaOrigen->Name = L"lbCordenadaOrigen";
@@ -255,7 +340,9 @@ namespace TB1TransformacionesLineales {
 			   this->lbCordenadaOrigen->TabIndex = 15;
 			   this->lbCordenadaOrigen->Text = L"b:";
 			   this->lbCordenadaOrigen->Visible = false;
-
+			   // 
+			   // lbPendiente
+			   // 
 			   this->lbPendiente->AutoSize = true;
 			   this->lbPendiente->Location = System::Drawing::Point(13, 97);
 			   this->lbPendiente->Name = L"lbPendiente";
@@ -263,7 +350,9 @@ namespace TB1TransformacionesLineales {
 			   this->lbPendiente->TabIndex = 14;
 			   this->lbPendiente->Text = L"m:";
 			   this->lbPendiente->Visible = false;
-
+			   // 
+			   // lbEcuacionRecta
+			   // 
 			   this->lbEcuacionRecta->AutoSize = true;
 			   this->lbEcuacionRecta->Location = System::Drawing::Point(10, 60);
 			   this->lbEcuacionRecta->Name = L"lbEcuacionRecta";
@@ -271,13 +360,17 @@ namespace TB1TransformacionesLineales {
 			   this->lbEcuacionRecta->TabIndex = 13;
 			   this->lbEcuacionRecta->Text = L"Ecuacion lineal (y = mx + b)";
 			   this->lbEcuacionRecta->Visible = false;
-
+			   // 
+			   // txtPendiente
+			   // 
 			   this->txtPendiente->Location = System::Drawing::Point(40, 94);
 			   this->txtPendiente->Name = L"txtPendiente";
 			   this->txtPendiente->Size = System::Drawing::Size(56, 22);
 			   this->txtPendiente->TabIndex = 12;
 			   this->txtPendiente->Visible = false;
-
+			   // 
+			   // cboEjeReflexion
+			   // 
 			   this->cboEjeReflexion->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
 			   this->cboEjeReflexion->FormattingEnabled = true;
 			   this->cboEjeReflexion->Items->AddRange(gcnew cli::array< System::Object^  >(3) { L"Eje X", L"Eje Y", L"Recta general" });
@@ -286,7 +379,9 @@ namespace TB1TransformacionesLineales {
 			   this->cboEjeReflexion->Size = System::Drawing::Size(223, 24);
 			   this->cboEjeReflexion->TabIndex = 11;
 			   this->cboEjeReflexion->SelectedIndexChanged += gcnew System::EventHandler(this, &FrmSimuladorTL::cboEjeReflexion_SelectedIndexChanged);
-
+			   // 
+			   // btnReflejar
+			   // 
 			   this->btnReflejar->Location = System::Drawing::Point(6, 122);
 			   this->btnReflejar->Name = L"btnReflejar";
 			   this->btnReflejar->Size = System::Drawing::Size(241, 26);
@@ -294,38 +389,48 @@ namespace TB1TransformacionesLineales {
 			   this->btnReflejar->Text = L"Reflejar";
 			   this->btnReflejar->UseVisualStyleBackColor = true;
 			   this->btnReflejar->Click += gcnew System::EventHandler(this, &FrmSimuladorTL::btnReflejar_Click);
-
+			   // 
+			   // groupBox3
+			   // 
 			   this->groupBox3->BackColor = System::Drawing::SystemColors::GradientActiveCaption;
 			   this->groupBox3->Controls->Add(this->btnRotar);
 			   this->groupBox3->Controls->Add(this->lbAnguloRotacion);
 			   this->groupBox3->Controls->Add(this->txtAnguloRotacion);
 			   this->groupBox3->Location = System::Drawing::Point(12, 365);
 			   this->groupBox3->Name = L"groupBox3";
-			   this->groupBox3->Size = System::Drawing::Size(253, 140);
+			   this->groupBox3->Size = System::Drawing::Size(253, 118);
 			   this->groupBox3->TabIndex = 1;
 			   this->groupBox3->TabStop = false;
 			   this->groupBox3->Text = L"Rotacion";
-
-			   this->btnRotar->Location = System::Drawing::Point(6, 100);
+			   // 
+			   // btnRotar
+			   // 
+			   this->btnRotar->Location = System::Drawing::Point(6, 73);
 			   this->btnRotar->Name = L"btnRotar";
 			   this->btnRotar->Size = System::Drawing::Size(241, 26);
 			   this->btnRotar->TabIndex = 9;
 			   this->btnRotar->Text = L"Rotar";
 			   this->btnRotar->UseVisualStyleBackColor = true;
 			   this->btnRotar->Click += gcnew System::EventHandler(this, &FrmSimuladorTL::btnRotar_Click);
-
+			   // 
+			   // lbAnguloRotacion
+			   // 
 			   this->lbAnguloRotacion->AutoSize = true;
-			   this->lbAnguloRotacion->Location = System::Drawing::Point(10, 60);
+			   this->lbAnguloRotacion->Location = System::Drawing::Point(9, 38);
 			   this->lbAnguloRotacion->Name = L"lbAnguloRotacion";
 			   this->lbAnguloRotacion->Size = System::Drawing::Size(125, 16);
 			   this->lbAnguloRotacion->TabIndex = 8;
 			   this->lbAnguloRotacion->Text = L"Angulo de Rotacion";
-
-			   this->txtAnguloRotacion->Location = System::Drawing::Point(149, 60);
+			   // 
+			   // txtAnguloRotacion
+			   // 
+			   this->txtAnguloRotacion->Location = System::Drawing::Point(150, 32);
 			   this->txtAnguloRotacion->Name = L"txtAnguloRotacion";
 			   this->txtAnguloRotacion->Size = System::Drawing::Size(84, 22);
 			   this->txtAnguloRotacion->TabIndex = 7;
-
+			   // 
+			   // grpFigura
+			   // 
 			   this->grpFigura->BackColor = System::Drawing::SystemColors::GradientActiveCaption;
 			   this->grpFigura->Controls->Add(this->btnDibujarFigura);
 			   this->grpFigura->Controls->Add(this->btnTriangulo);
@@ -340,7 +445,9 @@ namespace TB1TransformacionesLineales {
 			   this->grpFigura->TabIndex = 1;
 			   this->grpFigura->TabStop = false;
 			   this->grpFigura->Text = L"Figura";
-
+			   // 
+			   // btnDibujarFigura
+			   // 
 			   this->btnDibujarFigura->Location = System::Drawing::Point(6, 110);
 			   this->btnDibujarFigura->Name = L"btnDibujarFigura";
 			   this->btnDibujarFigura->Size = System::Drawing::Size(241, 26);
@@ -348,54 +455,74 @@ namespace TB1TransformacionesLineales {
 			   this->btnDibujarFigura->Text = L"Dibujar Figura";
 			   this->btnDibujarFigura->UseVisualStyleBackColor = true;
 			   this->btnDibujarFigura->Click += gcnew System::EventHandler(this, &FrmSimuladorTL::btnDibujarFigura_Click);
-
+			   // 
+			   // btnTriangulo
+			   // 
 			   this->btnTriangulo->Location = System::Drawing::Point(6, 140);
 			   this->btnTriangulo->Name = L"btnTriangulo";
 			   this->btnTriangulo->Size = System::Drawing::Size(115, 26);
+			   this->btnTriangulo->TabIndex = 14;
 			   this->btnTriangulo->Text = L"Triangulo";
 			   this->btnTriangulo->UseVisualStyleBackColor = true;
 			   this->btnTriangulo->Click += gcnew System::EventHandler(this, &FrmSimuladorTL::btnTriangulo_Click);
-
+			   // 
+			   // btnCuadrado
+			   // 
 			   this->btnCuadrado->Location = System::Drawing::Point(132, 140);
 			   this->btnCuadrado->Name = L"btnCuadrado";
 			   this->btnCuadrado->Size = System::Drawing::Size(115, 26);
+			   this->btnCuadrado->TabIndex = 15;
 			   this->btnCuadrado->Text = L"Cuadrado";
 			   this->btnCuadrado->UseVisualStyleBackColor = true;
 			   this->btnCuadrado->Click += gcnew System::EventHandler(this, &FrmSimuladorTL::btnCuadrado_Click);
-
+			   // 
+			   // txtCordenadasY
+			   // 
 			   this->txtCordenadasY->Location = System::Drawing::Point(113, 70);
 			   this->txtCordenadasY->Name = L"txtCordenadasY";
 			   this->txtCordenadasY->Size = System::Drawing::Size(121, 22);
 			   this->txtCordenadasY->TabIndex = 12;
-
+			   // 
+			   // txtCordenadasX
+			   // 
 			   this->txtCordenadasX->Location = System::Drawing::Point(112, 32);
 			   this->txtCordenadasX->Name = L"txtCordenadasX";
 			   this->txtCordenadasX->Size = System::Drawing::Size(121, 22);
 			   this->txtCordenadasX->TabIndex = 11;
-
+			   // 
+			   // lbCordenadasY
+			   // 
 			   this->lbCordenadasY->AutoSize = true;
 			   this->lbCordenadasY->Location = System::Drawing::Point(10, 70);
 			   this->lbCordenadasY->Name = L"lbCordenadasY";
 			   this->lbCordenadasY->Size = System::Drawing::Size(97, 16);
 			   this->lbCordenadasY->TabIndex = 10;
 			   this->lbCordenadasY->Text = L"Cordenadas Y:";
-
+			   // 
+			   // lbCordenadasX
+			   // 
 			   this->lbCordenadasX->AutoSize = true;
 			   this->lbCordenadasX->Location = System::Drawing::Point(3, 38);
 			   this->lbCordenadasX->Name = L"lbCordenadasX";
 			   this->lbCordenadasX->Size = System::Drawing::Size(96, 16);
 			   this->lbCordenadasX->TabIndex = 9;
 			   this->lbCordenadasX->Text = L"Cordenadas X:";
-
+			   // 
+			   // pnlDibujar
+			   // 
 			   this->pnlDibujar->BackColor = System::Drawing::SystemColors::InactiveCaptionText;
 			   this->pnlDibujar->Location = System::Drawing::Point(285, 13);
 			   this->pnlDibujar->Name = L"pnlDibujar";
 			   this->pnlDibujar->Size = System::Drawing::Size(746, 700);
 			   this->pnlDibujar->TabIndex = 2;
 			   this->pnlDibujar->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &FrmSimuladorTL::pnlDibujar_Paint);
-
+			   // 
+			   // timer1
+			   // 
 			   this->timer1->Tick += gcnew System::EventHandler(this, &FrmSimuladorTL::timer1_Tick);
-
+			   // 
+			   // btnRestablecerFigura
+			   // 
 			   this->btnRestablecerFigura->Location = System::Drawing::Point(12, 675);
 			   this->btnRestablecerFigura->Name = L"btnRestablecerFigura";
 			   this->btnRestablecerFigura->Size = System::Drawing::Size(135, 35);
@@ -403,7 +530,9 @@ namespace TB1TransformacionesLineales {
 			   this->btnRestablecerFigura->Text = L"Restablecer Figura";
 			   this->btnRestablecerFigura->UseVisualStyleBackColor = true;
 			   this->btnRestablecerFigura->Click += gcnew System::EventHandler(this, &FrmSimuladorTL::btnRestablecerFigura_Click);
-
+			   // 
+			   // FrmSimuladorTL
+			   // 
 			   this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
 			   this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			   this->ClientSize = System::Drawing::Size(1043, 734);
@@ -560,7 +689,7 @@ namespace TB1TransformacionesLineales {
 		   bool validarCampoReHomotencia(String^ factor) {
 			   try
 			   {
-				   int k = Convert::ToInt32(factor);
+				   double k = Convert::ToDouble(factor);
 				   return (k && k != 0);
 			   }
 			   catch (Exception^ e) {
@@ -740,10 +869,16 @@ namespace TB1TransformacionesLineales {
 			return;
 		}
 
+
 		esHomotecia = true;
 		guardarEstadoActual();
 
 		double factorEscala = Convert::ToDouble(strFactor);
+		double centroHomotenciaX = Convert::ToDouble(txtCoordXPHomotencia->Text);
+		double centroHomotenciaY = Convert::ToDouble(txtCoordYPHomotencia->Text);
+
+		figuraActual->setX( figuraActual->getX() + centroHomotenciaX);
+		figuraActual->setY(figuraActual->getY() + centroHomotenciaY);
 
 		int tipoEscalado = 0;
 		if (rbtnX->Checked) {
@@ -765,6 +900,9 @@ namespace TB1TransformacionesLineales {
 			this->animacion = new Animacion(objHomotecia, dibujador, 24, 1);
 			timer1->Start();
 		}
+		figuraActual->setX(figuraActual->getX() - centroHomotenciaX);
+		figuraActual->setY(figuraActual->getY() - centroHomotenciaY);
+
 	}
 
 	private: System::Void timer1_Tick(System::Object^ sender, System::EventArgs^ e) {
