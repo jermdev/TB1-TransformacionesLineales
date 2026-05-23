@@ -56,6 +56,9 @@ namespace TB1TransformacionesLineales {
 			int x = pnlDibujar->Width;
 			int y = pnlDibujar->Height;
 
+			cordenadaXCentroHototencia = x;
+			cordenadaYCentroHototencia = y;
+
 			txtCoordXPHomotencia->Text = Convert::ToString(0);
 			txtCoordYPHomotencia->Text = Convert::ToString(0);
 
@@ -133,6 +136,9 @@ namespace TB1TransformacionesLineales {
 		bool esHomotecia;
 		double escalaGrid;
 		double cachedEscalaGrid;
+
+		double cordenadaXCentroHototencia;
+		double cordenadaYCentroHototencia;
 	private: System::Windows::Forms::Timer^ timer1;
 	private: System::Windows::Forms::Button^ btnRestablecerFigura;
 	private: System::Windows::Forms::Button^ btnReiniciar;
@@ -150,6 +156,11 @@ private: System::Windows::Forms::TextBox^ txtCoordXPHomotencia;
 
 private: System::Windows::Forms::Label^ lbCoordYPHomotencia;
 private: System::Windows::Forms::Label^ lbCoordXPHomotencia;
+
+private: System::Windows::Forms::Label^ lbCentroX;
+private: System::Windows::Forms::Label^ lbCentroY;
+private: System::Windows::Forms::TextBox^ txtCentroX;
+private: System::Windows::Forms::TextBox^ txtCentroY;
 
 
 
@@ -219,6 +230,10 @@ private: System::Windows::Forms::Label^ lbCoordXPHomotencia;
 			   this->grpHomotecia->Controls->Add(this->rbtnX);
 			   this->grpHomotecia->Controls->Add(this->radioButton1);
 			   this->grpHomotecia->Controls->Add(this->btnHomotencia);
+			   this->grpHomotecia->Controls->Add(this->lbCentroX);
+			   this->grpHomotecia->Controls->Add(this->txtCentroX);
+			   this->grpHomotecia->Controls->Add(this->lbCentroY);
+			   this->grpHomotecia->Controls->Add(this->txtCentroY);
 			   this->grpHomotecia->Location = System::Drawing::Point(18, 489);
 			   this->grpHomotecia->Name = L"grpHomotecia";
 			   this->grpHomotecia->Size = System::Drawing::Size(253, 168);
@@ -679,7 +694,7 @@ private: System::Windows::Forms::Label^ lbCoordXPHomotencia;
 
 		if (figuraActual != nullptr && dibujador != nullptr) {
 			if (figuraBaseOriginal != nullptr) {
-				dibujador->DibujarFiguraComparativa(gBuffer, figuraBaseOriginal, figuraActual, escalaGrid, esHomotecia);
+				dibujador->DibujarFiguraComparativa(gBuffer, figuraBaseOriginal, figuraActual, escalaGrid, esHomotecia, cordenadaXCentroHototencia, cordenadaYCentroHototencia);
 			}
 			else {
 				dibujador->DibujarFiguraNormal(gBuffer, figuraActual, escalaGrid);
@@ -695,55 +710,28 @@ private: System::Windows::Forms::Label^ lbCoordXPHomotencia;
 		   void DibujarEjesConNumeros(Graphics^ g, int ancho, int alto) {
 			   int centroX = ancho / 2;
 			   int centroY = alto / 2;
-			   double escala = escalaGrid;
+			   int escala = escalaGrid; // usa el miembro en lugar del literal
 
 			   Pen^ penEjes = gcnew Pen(Color::White, 2.0f);
-			   g->DrawLine(penEjes, 0.0f, (float)centroY, (float)ancho, (float)centroY);
-			   g->DrawLine(penEjes, (float)centroX, 0.0f, (float)centroX, (float)alto);
+			   g->DrawLine(penEjes, 0, centroY, ancho, centroY); // Eje X
+			   g->DrawLine(penEjes, centroX, 0, centroX, alto);  // Eje Y
 
 			   System::Drawing::Font^ fuente = gcnew System::Drawing::Font("Arial", 8);
 			   SolidBrush^ brochaBlanca = gcnew SolidBrush(Color::White);
 			   Pen^ penMarcas = gcnew Pen(Color::LightGray, 1.0f);
 
-			   int step = 1;
-			   while ((step * escala) < 20.0) {
-				   if (step == 1) step = 2;
-				   else if (step == 2) step = 5;
-				   else if (step == 5) step = 10;
-				   else if (step == 10) step = 20;
-				   else if (step == 20) step = 50;
-				   else if (step == 50) step = 100;
-				   else step += 100;
+			   for (int i = -15; i <= 15; i++) {
+				   if (i == 0) continue;
+				   int posX = centroX + (i * escala);
+				   g->DrawLine(penMarcas, posX, centroY - 3, posX, centroY + 3);
+				   g->DrawString(i.ToString(), fuente, brochaBlanca, posX - 6, centroY + 5);
 			   }
 
-			   int maxMarcas = (int)((Math::Max(ancho, alto) / 2) / escala) + 1;
-
-			   for (int i = -maxMarcas; i <= maxMarcas; i++) {
+			   for (int i = -15; i <= 15; i++) {
 				   if (i == 0) continue;
-
-				   if (i % step == 0) {
-					   float posX = centroX + (float)(i * escala);
-					   if (posX >= 0 && posX <= ancho) {
-						   g->DrawLine(penMarcas, posX, (float)(centroY - 4), posX, (float)(centroY + 4));
-						   g->DrawString(i.ToString(), fuente, brochaBlanca, posX - 8, centroY + 6);
-					   }
-
-					   float posY = centroY - (float)(i * escala);
-					   if (posY >= 0 && posY <= alto) {
-						   g->DrawLine(penMarcas, (float)(centroX - 4), posY, (float)(centroX + 4), posY);
-						   g->DrawString(i.ToString(), fuente, brochaBlanca, centroX + 6, posY - 6);
-					   }
-				   }
-				   else {
-					   float posX = centroX + (float)(i * escala);
-					   if (posX >= 0 && posX <= ancho && (escala > 5.0)) {
-						   g->DrawLine(penMarcas, posX, (float)(centroY - 2), posX, (float)(centroY + 2));
-					   }
-					   float posY = centroY - (float)(i * escala);
-					   if (posY >= 0 && posY <= alto && (escala > 5.0)) {
-						   g->DrawLine(penMarcas, (float)(centroX - 2), posY, (float)(centroX + 2), posY);
-					   }
-				   }
+				   int posY = centroY - (i * escala);
+				   g->DrawLine(penMarcas, centroX - 3, posY, centroX + 3, posY);
+				   g->DrawString(i.ToString(), fuente, brochaBlanca, centroX + 5, posY - 6);
 			   }
 		   }
 
@@ -958,8 +946,10 @@ private: System::Windows::Forms::Label^ lbCoordXPHomotencia;
 		double centroHomotenciaX = Convert::ToDouble(txtCoordXPHomotencia->Text);
 		double centroHomotenciaY = Convert::ToDouble(txtCoordYPHomotencia->Text);
 
-		figuraActual->setX( figuraActual->getX() + centroHomotenciaX);
-		figuraActual->setY(figuraActual->getY() + centroHomotenciaY);
+		this->cordenadaXCentroHototencia = centroHomotenciaX*escalaGrid + figuraActual->getX();
+		this->cordenadaYCentroHototencia = -centroHomotenciaY*escalaGrid + figuraActual->getY();
+
+		
 
 		int tipoEscalado = 0;
 		if (rbtnX->Checked) {
@@ -976,24 +966,31 @@ private: System::Windows::Forms::Label^ lbCoordXPHomotencia;
 			return;
 		}
 
-		Homotecia* objHomotecia = new Homotecia(figuraActual, factorEscala, tipoEscalado);
+		Homotecia* objHomotecia = new Homotecia(figuraActual, factorEscala, tipoEscalado, centroHomotenciaX, centroHomotenciaY);
 		if (objHomotecia != nullptr) {
 			this->animacion = new Animacion(objHomotecia, dibujador, 24, 1);
 			timer1->Start();
 		}
-		figuraActual->setX(figuraActual->getX() - centroHomotenciaX);
-		figuraActual->setY(figuraActual->getY() - centroHomotenciaY);
+		figuraActual;
 
 	}
 
 	private: System::Void timer1_Tick(System::Object^ sender, System::EventArgs^ e) {
 		if (animacion != nullptr) {
+
 			animacion->animarPaso();
-			pnlDibujar->Refresh();
+
+			pnlDibujar->Invalidate();
+			pnlDibujar->Update();
 
 			if (animacion->getPasosRestantes() <= 0) {
+
+				pnlDibujar->Invalidate();
+				pnlDibujar->Update();
+
 				delete animacion;
 				animacion = nullptr;
+
 				timer1->Stop();
 			}
 		}

@@ -54,7 +54,7 @@ public:
         }
         else if (tipo == 1) {
             pasoActual++;
-            double t = (double)pasoActual / (double)pasosTotales;
+            double t = Math::Min(1.0, (double)pasoActual / (double)pasosTotales);
 
             auto ptsAct = trasformacionActual->getFigura()->getPuntos();
             auto ptsIni = figInicial->getPuntos();
