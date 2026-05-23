@@ -37,15 +37,17 @@ public:
                 // Ecuación general: a x + c y + d = 0
                 // Para y = m x + b -> a = m, c = -1, d = b
                 
-                double a = m;
-                double c = -1.0;
-                double d = b;
-                double denom = a*a + c*c;
-                if (denom == 0.0) continue; // seguridad (no debería ocurrir con c = -1)
+                double A = m;
+                double B = -1.0;
+                double C = b;
 
-                double discriminante = (a * x + c * y + d) / denom;
-                double xr = x - 2.0 * a * discriminante;
-                double yr = y - 2.0 * c * discriminante;
+               double denom = A * A + B * B;
+
+                double dist =
+                    (A * x + B * y + C) / denom;
+
+                double xr = x - 2.0 * A * dist;
+                double yr = y - 2.0 * B * dist;
 
                 puntos[i]->setX(xr);
                 puntos[i]->setY(yr);
