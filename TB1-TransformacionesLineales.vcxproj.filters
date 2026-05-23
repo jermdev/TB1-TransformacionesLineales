@@ -56,6 +56,12 @@
     <ClInclude Include="Animacion.h">
       <Filter>Service</Filter>
     </ClInclude>
+    <ClInclude Include="FrmPrincipal.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="FrmExplicacion.h">
+      <Filter>UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
@@ -65,6 +71,12 @@
       <Filter>UI</Filter>
     </ClCompile>
     <ClCompile Include="Animacion.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="FrmPrincipal.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="FrmExplicacion.cpp">
       <Filter>UI</Filter>
     </ClCompile>
   </ItemGroup>

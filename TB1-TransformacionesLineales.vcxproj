@@ -127,6 +127,12 @@
     <ClInclude Include="Animacion.h" />
     <ClInclude Include="Dibujador.h" />
     <ClInclude Include="Figura.h" />
+    <ClInclude Include="FrmExplicacion.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="FrmPrincipal.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="FrmSimuladorTL.h">
       <FileType>CppForm</FileType>
     </ClInclude>
@@ -142,6 +148,8 @@
   <ItemGroup>
     <ClCompile Include="Animacion.cpp" />
     <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="FrmExplicacion.cpp" />
+    <ClCompile Include="FrmPrincipal.cpp" />
     <ClCompile Include="FrmSimuladorTL.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -159,6 +167,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="FrmExplicacion.resx">
+      <DependentUpon>FrmExplicacion.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmPrincipal.resx">
+      <DependentUpon>FrmPrincipal.h</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FrmSimuladorTL.resx">
       <DependentUpon>FrmSimuladorTL.h</DependentUpon>
     </EmbeddedResource>

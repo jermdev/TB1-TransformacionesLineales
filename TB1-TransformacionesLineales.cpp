@@ -1,6 +1,6 @@
 #include "pch.h"
 #include <iostream>
-#include "FrmSimuladorTL.h"
+#include "FrmPrincipal.h"
 
 using namespace System;
 using namespace System::Windows::Forms;
@@ -10,6 +10,6 @@ void main()
 {
 	Application::EnableVisualStyles();
 	Application::SetCompatibleTextRenderingDefault(false);
-	Application::Run(gcnew TB1TransformacionesLineales::FrmSimuladorTL());
+	Application::Run(gcnew TB1TransformacionesLineales::FrmPrincipal());
 	
 }
