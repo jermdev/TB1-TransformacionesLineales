@@ -752,6 +752,19 @@ namespace TB1TransformacionesLineales {
 			   return false;
 		   }
 
+		   bool validarCampoCentroHomotencia(String^ texto) {
+			   double valor;
+
+			   return Double::TryParse(
+				   texto,
+				   System::Globalization::NumberStyles::Float,
+				   System::Globalization::CultureInfo::InvariantCulture,
+				   valor
+			   );
+		   }
+
+		   
+
 		   bool validadarCampoEcuacionLineal(String^ pendiente, String^ coordenadaOrigen) {
 			   try
 			   {
@@ -972,6 +985,12 @@ namespace TB1TransformacionesLineales {
 		guardarEstadoActual();
 
 		double factorEscala = Double::Parse(strFactor, System::Globalization::CultureInfo::InvariantCulture);
+
+		if (!validarCampoCentroHomotencia(txtCoordXPHomotencia->Text) || !validarCampoCentroHomotencia(txtCoordYPHomotencia->Text)) {
+			MessageBox::Show("Cordenadas del centro de la homotencia no validos");
+			return;
+		}
+
 		double centroHomotenciaX = Convert::ToDouble(txtCoordXPHomotencia->Text);
 		double centroHomotenciaY = Convert::ToDouble(txtCoordYPHomotencia->Text);
 

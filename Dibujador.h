@@ -33,22 +33,14 @@ public:
 		for (size_t i = 0; i < puntosActual.size(); ++i) {
 
 			// Punto ORIGINAL
-			float ox =
-				(float)(puntosOriginal[i]->getX() * escala +
-					original->getX());
+			float ox = (float)(puntosOriginal[i]->getX() * escala + original->getX());
 
-			float oy =
-				(float)(puntosOriginal[i]->getY() * escala +
-					original->getY());
+			float oy = (float)(puntosOriginal[i]->getY() * escala + original->getY());
 
 			// Punto TRANSFORMADO
-			float dx =
-				(float)(puntosActual[i]->getX() * escala +
-					actual->getX());
+			float dx = (float)(puntosActual[i]->getX() * escala + actual->getX());
 
-			float dy =
-				(float)(puntosActual[i]->getY() * escala +
-					actual->getY());
+			float dy = (float)(puntosActual[i]->getY() * escala + actual->getY());
 
 			// Dirección de la recta homotética
 			float vx = dx - cx;
@@ -76,18 +68,12 @@ public:
 			float endY = cy + vy * extension;
 
 			// dibujar recta completa
-			g->DrawLine(
-				penProyeccion,
-				startX,
-				startY,
-				endX,
-				endY);
+			g->DrawLine( penProyeccion, startX, startY, endX, endY);
 		}
 		delete penProyeccion;
 	}
 
 	void DibujarAuxiliar(Graphics^ g, Figura* fig, Color c, double escala, DashStyle style, int thickness) {
-
 
 		auto puntosLista = fig->getPuntos();
 		size_t n = puntosLista.size();
