@@ -36,9 +36,6 @@ namespace TB1TransformacionesLineales {
 	using namespace System::Data;
 	using namespace System::Drawing;
 
-	/// <summary>
-	/// Resumen de FrmSimuladorTL
-	/// </summary>
 	public ref class FrmSimuladorTL : public System::Windows::Forms::Form
 	{
 	public:
@@ -50,6 +47,7 @@ namespace TB1TransformacionesLineales {
 			cachedEscalaGrid = 0.0;
 			mostrarRecta = false;
 			esHomotecia = false;
+			modoClick = false;
 			reflecM = 0.0;
 			reflecB = 0.0;
 
@@ -61,7 +59,6 @@ namespace TB1TransformacionesLineales {
 
 			txtCoordXPHomotencia->Text = Convert::ToString(0);
 			txtCoordYPHomotencia->Text = Convert::ToString(0);
-
 
 			figuraAnterior = new Figura(x / 2, y / 2);
 			figuraActual = new Figura(x / 2, y / 2);
@@ -84,9 +81,6 @@ namespace TB1TransformacionesLineales {
 		}
 
 	protected:
-		/// <summary>
-		/// Limpiar los recursos que se est?n usando.
-		/// </summary>
 		~FrmSimuladorTL()
 		{
 			if (components)
@@ -115,10 +109,7 @@ namespace TB1TransformacionesLineales {
 	private: System::Windows::Forms::TextBox^ txtAnguloRotacion;
 	private: System::Windows::Forms::Button^ btnRotar;
 	private: System::Windows::Forms::Button^ btnDibujarFigura;
-	private: System::Windows::Forms::TextBox^ txtCordenadasY;
-	private: System::Windows::Forms::TextBox^ txtCordenadasX;
-	private: System::Windows::Forms::Label^ lbCordenadasY;
-	private: System::Windows::Forms::Label^ lbCordenadasX;
+	private: System::Windows::Forms::Button^ btnDibujarModoClick;
 	private: System::Windows::Forms::ComboBox^ cboEjeReflexion;
 	private: System::Windows::Forms::Button^ btnReflejar;
 	private: System::ComponentModel::IContainer^ components;
@@ -134,6 +125,7 @@ namespace TB1TransformacionesLineales {
 		double reflecB;
 		bool mostrarRecta;
 		bool esHomotecia;
+		bool modoClick;
 		double escalaGrid;
 		double cachedEscalaGrid;
 
@@ -150,27 +142,21 @@ namespace TB1TransformacionesLineales {
 	private: System::Windows::Forms::Button^ btnTriangulo;
 	private: System::Windows::Forms::Button^ btnCuadrado;
 	private: System::Windows::Forms::Label^ lbPuntoHomotencia;
-private: System::Windows::Forms::TextBox^ txtCoordYPHomotencia;
-
-private: System::Windows::Forms::TextBox^ txtCoordXPHomotencia;
-
-private: System::Windows::Forms::Label^ lbCoordYPHomotencia;
-private: System::Windows::Forms::Label^ lbCoordXPHomotencia;
-
-private: System::Windows::Forms::Label^ lbCentroX;
-private: System::Windows::Forms::Label^ lbCentroY;
-private: System::Windows::Forms::TextBox^ txtCentroX;
-private: System::Windows::Forms::TextBox^ txtCentroY;
-
-
+	private: System::Windows::Forms::TextBox^ txtCoordYPHomotencia;
+	private: System::Windows::Forms::TextBox^ txtCoordXPHomotencia;
+	private: System::Windows::Forms::Label^ lbCoordYPHomotencia;
+	private: System::Windows::Forms::Label^ lbCoordXPHomotencia;
+	private: System::Windows::Forms::Label^ lbCentroX;
+	private: System::Windows::Forms::Label^ lbCentroY;
+	private: System::Windows::Forms::TextBox^ txtCentroX;
+	private: System::Windows::Forms::TextBox^ txtCentroY;
+	private: System::Windows::Forms::DataGridView^ dgvCoordenadas;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ colX;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ colY;
 
 		   Animacion* animacion;
 
 #pragma region Windows Form Designer generated code
-		   /// <summary>
-		   /// M?todo necesario para admitir el Dise?ador. No se puede modificar
-		   /// el contenido de este m?todo con el editor de c?digo.
-		   /// </summary>
 		   void InitializeComponent(void)
 		   {
 			   this->components = (gcnew System::ComponentModel::Container());
@@ -186,6 +172,10 @@ private: System::Windows::Forms::TextBox^ txtCentroY;
 			   this->rbtnX = (gcnew System::Windows::Forms::RadioButton());
 			   this->radioButton1 = (gcnew System::Windows::Forms::RadioButton());
 			   this->btnHomotencia = (gcnew System::Windows::Forms::Button());
+			   this->lbCentroX = (gcnew System::Windows::Forms::Label());
+			   this->txtCentroX = (gcnew System::Windows::Forms::TextBox());
+			   this->lbCentroY = (gcnew System::Windows::Forms::Label());
+			   this->txtCentroY = (gcnew System::Windows::Forms::TextBox());
 			   this->groupBox2 = (gcnew System::Windows::Forms::GroupBox());
 			   this->txtCordenadaOrigen = (gcnew System::Windows::Forms::TextBox());
 			   this->lbCordenadaOrigen = (gcnew System::Windows::Forms::Label());
@@ -199,13 +189,13 @@ private: System::Windows::Forms::TextBox^ txtCentroY;
 			   this->lbAnguloRotacion = (gcnew System::Windows::Forms::Label());
 			   this->txtAnguloRotacion = (gcnew System::Windows::Forms::TextBox());
 			   this->grpFigura = (gcnew System::Windows::Forms::GroupBox());
+			   this->dgvCoordenadas = (gcnew System::Windows::Forms::DataGridView());
+			   this->colX = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			   this->colY = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			   this->btnDibujarFigura = (gcnew System::Windows::Forms::Button());
+			   this->btnDibujarModoClick = (gcnew System::Windows::Forms::Button());
 			   this->btnTriangulo = (gcnew System::Windows::Forms::Button());
 			   this->btnCuadrado = (gcnew System::Windows::Forms::Button());
-			   this->txtCordenadasY = (gcnew System::Windows::Forms::TextBox());
-			   this->txtCordenadasX = (gcnew System::Windows::Forms::TextBox());
-			   this->lbCordenadasY = (gcnew System::Windows::Forms::Label());
-			   this->lbCordenadasX = (gcnew System::Windows::Forms::Label());
 			   this->pnlDibujar = (gcnew System::Windows::Forms::Panel());
 			   this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
 			   this->btnRestablecerFigura = (gcnew System::Windows::Forms::Button());
@@ -214,10 +204,9 @@ private: System::Windows::Forms::TextBox^ txtCentroY;
 			   this->groupBox2->SuspendLayout();
 			   this->groupBox3->SuspendLayout();
 			   this->grpFigura->SuspendLayout();
+			   (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dgvCoordenadas))->BeginInit();
 			   this->SuspendLayout();
-			   // 
-			   // grpHomotecia
-			   // 
+
 			   this->grpHomotecia->BackColor = System::Drawing::SystemColors::GradientActiveCaption;
 			   this->grpHomotecia->Controls->Add(this->lbCoordYPHomotencia);
 			   this->grpHomotecia->Controls->Add(this->lbCoordXPHomotencia);
@@ -230,76 +219,56 @@ private: System::Windows::Forms::TextBox^ txtCentroY;
 			   this->grpHomotecia->Controls->Add(this->rbtnX);
 			   this->grpHomotecia->Controls->Add(this->radioButton1);
 			   this->grpHomotecia->Controls->Add(this->btnHomotencia);
-			   this->grpHomotecia->Controls->Add(this->lbCentroX);
-			   this->grpHomotecia->Controls->Add(this->txtCentroX);
-			   this->grpHomotecia->Controls->Add(this->lbCentroY);
-			   this->grpHomotecia->Controls->Add(this->txtCentroY);
-			   this->grpHomotecia->Location = System::Drawing::Point(18, 489);
+			   this->grpHomotecia->Location = System::Drawing::Point(18, 510);
 			   this->grpHomotecia->Name = L"grpHomotecia";
 			   this->grpHomotecia->Size = System::Drawing::Size(253, 168);
 			   this->grpHomotecia->TabIndex = 0;
 			   this->grpHomotecia->TabStop = false;
 			   this->grpHomotecia->Text = L"Homotecia";
-			   // 
-			   // lbCoordYPHomotencia
-			   // 
+
 			   this->lbCoordYPHomotencia->AutoSize = true;
 			   this->lbCoordYPHomotencia->Location = System::Drawing::Point(186, 40);
 			   this->lbCoordYPHomotencia->Name = L"lbCoordYPHomotencia";
 			   this->lbCoordYPHomotencia->Size = System::Drawing::Size(19, 16);
 			   this->lbCoordYPHomotencia->TabIndex = 11;
 			   this->lbCoordYPHomotencia->Text = L"Y:";
-			   // 
-			   // lbCoordXPHomotencia
-			   // 
+
 			   this->lbCoordXPHomotencia->AutoSize = true;
 			   this->lbCoordXPHomotencia->Location = System::Drawing::Point(132, 37);
 			   this->lbCoordXPHomotencia->Name = L"lbCoordXPHomotencia";
 			   this->lbCoordXPHomotencia->Size = System::Drawing::Size(18, 16);
 			   this->lbCoordXPHomotencia->TabIndex = 10;
 			   this->lbCoordXPHomotencia->Text = L"X:";
-			   // 
-			   // txtCoordYPHomotencia
-			   // 
+
 			   this->txtCoordYPHomotencia->Location = System::Drawing::Point(211, 34);
 			   this->txtCoordYPHomotencia->Name = L"txtCoordYPHomotencia";
 			   this->txtCoordYPHomotencia->Size = System::Drawing::Size(30, 22);
 			   this->txtCoordYPHomotencia->TabIndex = 9;
-			   // 
-			   // txtCoordXPHomotencia
-			   // 
+
 			   this->txtCoordXPHomotencia->Location = System::Drawing::Point(154, 34);
 			   this->txtCoordXPHomotencia->Name = L"txtCoordXPHomotencia";
 			   this->txtCoordXPHomotencia->Size = System::Drawing::Size(26, 22);
 			   this->txtCoordXPHomotencia->TabIndex = 8;
-			   // 
-			   // lbPuntoHomotencia
-			   // 
+
 			   this->lbPuntoHomotencia->AutoSize = true;
 			   this->lbPuntoHomotencia->Location = System::Drawing::Point(7, 37);
 			   this->lbPuntoHomotencia->Name = L"lbPuntoHomotencia";
 			   this->lbPuntoHomotencia->Size = System::Drawing::Size(125, 16);
 			   this->lbPuntoHomotencia->TabIndex = 7;
-			   this->lbPuntoHomotencia->Text = L"lbPuntoHomotencia";
-			   // 
-			   // txtFactor
-			   // 
+			   this->lbPuntoHomotencia->Text = L"Punto Homotecia:";
+
 			   this->txtFactor->Location = System::Drawing::Point(143, 72);
 			   this->txtFactor->Name = L"txtFactor";
 			   this->txtFactor->Size = System::Drawing::Size(84, 22);
 			   this->txtFactor->TabIndex = 6;
-			   // 
-			   // lbFactor
-			   // 
+
 			   this->lbFactor->AutoSize = true;
 			   this->lbFactor->Location = System::Drawing::Point(7, 72);
 			   this->lbFactor->Name = L"lbFactor";
 			   this->lbFactor->Size = System::Drawing::Size(48, 16);
 			   this->lbFactor->TabIndex = 5;
 			   this->lbFactor->Text = L"Factor:";
-			   // 
-			   // rbtnY
-			   // 
+
 			   this->rbtnY->AutoSize = true;
 			   this->rbtnY->Location = System::Drawing::Point(154, 100);
 			   this->rbtnY->Name = L"rbtnY";
@@ -308,9 +277,7 @@ private: System::Windows::Forms::TextBox^ txtCentroY;
 			   this->rbtnY->TabStop = true;
 			   this->rbtnY->Text = L"Y";
 			   this->rbtnY->UseVisualStyleBackColor = true;
-			   // 
-			   // rbtnX
-			   // 
+
 			   this->rbtnX->AutoSize = true;
 			   this->rbtnX->Location = System::Drawing::Point(107, 100);
 			   this->rbtnX->Name = L"rbtnX";
@@ -319,9 +286,7 @@ private: System::Windows::Forms::TextBox^ txtCentroY;
 			   this->rbtnX->TabStop = true;
 			   this->rbtnX->Text = L"X";
 			   this->rbtnX->UseVisualStyleBackColor = true;
-			   // 
-			   // radioButton1
-			   // 
+
 			   this->radioButton1->AutoSize = true;
 			   this->radioButton1->Location = System::Drawing::Point(6, 100);
 			   this->radioButton1->Name = L"radioButton1";
@@ -330,9 +295,7 @@ private: System::Windows::Forms::TextBox^ txtCentroY;
 			   this->radioButton1->TabStop = true;
 			   this->radioButton1->Text = L"Simetrico";
 			   this->radioButton1->UseVisualStyleBackColor = true;
-			   // 
-			   // btnHomotencia
-			   // 
+
 			   this->btnHomotencia->Location = System::Drawing::Point(6, 136);
 			   this->btnHomotencia->Name = L"btnHomotencia";
 			   this->btnHomotencia->Size = System::Drawing::Size(241, 26);
@@ -340,9 +303,7 @@ private: System::Windows::Forms::TextBox^ txtCentroY;
 			   this->btnHomotencia->Text = L"Aplicar";
 			   this->btnHomotencia->UseVisualStyleBackColor = true;
 			   this->btnHomotencia->Click += gcnew System::EventHandler(this, &FrmSimuladorTL::btnHomotencia_Click);
-			   // 
-			   // groupBox2
-			   // 
+
 			   this->groupBox2->BackColor = System::Drawing::SystemColors::GradientActiveCaption;
 			   this->groupBox2->Controls->Add(this->txtCordenadaOrigen);
 			   this->groupBox2->Controls->Add(this->lbCordenadaOrigen);
@@ -351,23 +312,19 @@ private: System::Windows::Forms::TextBox^ txtCentroY;
 			   this->groupBox2->Controls->Add(this->txtPendiente);
 			   this->groupBox2->Controls->Add(this->cboEjeReflexion);
 			   this->groupBox2->Controls->Add(this->btnReflejar);
-			   this->groupBox2->Location = System::Drawing::Point(12, 195);
+			   this->groupBox2->Location = System::Drawing::Point(12, 225);
 			   this->groupBox2->Name = L"groupBox2";
 			   this->groupBox2->Size = System::Drawing::Size(253, 161);
 			   this->groupBox2->TabIndex = 1;
 			   this->groupBox2->TabStop = false;
 			   this->groupBox2->Text = L"Reflexion";
-			   // 
-			   // txtCordenadaOrigen
-			   // 
+
 			   this->txtCordenadaOrigen->Location = System::Drawing::Point(141, 94);
 			   this->txtCordenadaOrigen->Name = L"txtCordenadaOrigen";
 			   this->txtCordenadaOrigen->Size = System::Drawing::Size(56, 22);
 			   this->txtCordenadaOrigen->TabIndex = 16;
 			   this->txtCordenadaOrigen->Visible = false;
-			   // 
-			   // lbCordenadaOrigen
-			   // 
+
 			   this->lbCordenadaOrigen->AutoSize = true;
 			   this->lbCordenadaOrigen->Location = System::Drawing::Point(114, 97);
 			   this->lbCordenadaOrigen->Name = L"lbCordenadaOrigen";
@@ -375,9 +332,7 @@ private: System::Windows::Forms::TextBox^ txtCentroY;
 			   this->lbCordenadaOrigen->TabIndex = 15;
 			   this->lbCordenadaOrigen->Text = L"b:";
 			   this->lbCordenadaOrigen->Visible = false;
-			   // 
-			   // lbPendiente
-			   // 
+
 			   this->lbPendiente->AutoSize = true;
 			   this->lbPendiente->Location = System::Drawing::Point(13, 97);
 			   this->lbPendiente->Name = L"lbPendiente";
@@ -385,9 +340,7 @@ private: System::Windows::Forms::TextBox^ txtCentroY;
 			   this->lbPendiente->TabIndex = 14;
 			   this->lbPendiente->Text = L"m:";
 			   this->lbPendiente->Visible = false;
-			   // 
-			   // lbEcuacionRecta
-			   // 
+
 			   this->lbEcuacionRecta->AutoSize = true;
 			   this->lbEcuacionRecta->Location = System::Drawing::Point(10, 60);
 			   this->lbEcuacionRecta->Name = L"lbEcuacionRecta";
@@ -395,17 +348,13 @@ private: System::Windows::Forms::TextBox^ txtCentroY;
 			   this->lbEcuacionRecta->TabIndex = 13;
 			   this->lbEcuacionRecta->Text = L"Ecuacion lineal (y = mx + b)";
 			   this->lbEcuacionRecta->Visible = false;
-			   // 
-			   // txtPendiente
-			   // 
+
 			   this->txtPendiente->Location = System::Drawing::Point(40, 94);
 			   this->txtPendiente->Name = L"txtPendiente";
 			   this->txtPendiente->Size = System::Drawing::Size(56, 22);
 			   this->txtPendiente->TabIndex = 12;
 			   this->txtPendiente->Visible = false;
-			   // 
-			   // cboEjeReflexion
-			   // 
+
 			   this->cboEjeReflexion->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
 			   this->cboEjeReflexion->FormattingEnabled = true;
 			   this->cboEjeReflexion->Items->AddRange(gcnew cli::array< System::Object^  >(3) { L"Eje X", L"Eje Y", L"Recta general" });
@@ -414,9 +363,7 @@ private: System::Windows::Forms::TextBox^ txtCentroY;
 			   this->cboEjeReflexion->Size = System::Drawing::Size(223, 24);
 			   this->cboEjeReflexion->TabIndex = 11;
 			   this->cboEjeReflexion->SelectedIndexChanged += gcnew System::EventHandler(this, &FrmSimuladorTL::cboEjeReflexion_SelectedIndexChanged);
-			   // 
-			   // btnReflejar
-			   // 
+
 			   this->btnReflejar->Location = System::Drawing::Point(6, 122);
 			   this->btnReflejar->Name = L"btnReflejar";
 			   this->btnReflejar->Size = System::Drawing::Size(241, 26);
@@ -424,22 +371,18 @@ private: System::Windows::Forms::TextBox^ txtCentroY;
 			   this->btnReflejar->Text = L"Reflejar";
 			   this->btnReflejar->UseVisualStyleBackColor = true;
 			   this->btnReflejar->Click += gcnew System::EventHandler(this, &FrmSimuladorTL::btnReflejar_Click);
-			   // 
-			   // groupBox3
-			   // 
+
 			   this->groupBox3->BackColor = System::Drawing::SystemColors::GradientActiveCaption;
 			   this->groupBox3->Controls->Add(this->btnRotar);
 			   this->groupBox3->Controls->Add(this->lbAnguloRotacion);
 			   this->groupBox3->Controls->Add(this->txtAnguloRotacion);
-			   this->groupBox3->Location = System::Drawing::Point(12, 365);
+			   this->groupBox3->Location = System::Drawing::Point(12, 390);
 			   this->groupBox3->Name = L"groupBox3";
 			   this->groupBox3->Size = System::Drawing::Size(253, 118);
 			   this->groupBox3->TabIndex = 1;
 			   this->groupBox3->TabStop = false;
 			   this->groupBox3->Text = L"Rotacion";
-			   // 
-			   // btnRotar
-			   // 
+
 			   this->btnRotar->Location = System::Drawing::Point(6, 73);
 			   this->btnRotar->Name = L"btnRotar";
 			   this->btnRotar->Size = System::Drawing::Size(241, 26);
@@ -447,52 +390,73 @@ private: System::Windows::Forms::TextBox^ txtCentroY;
 			   this->btnRotar->Text = L"Rotar";
 			   this->btnRotar->UseVisualStyleBackColor = true;
 			   this->btnRotar->Click += gcnew System::EventHandler(this, &FrmSimuladorTL::btnRotar_Click);
-			   // 
-			   // lbAnguloRotacion
-			   // 
+
 			   this->lbAnguloRotacion->AutoSize = true;
 			   this->lbAnguloRotacion->Location = System::Drawing::Point(9, 38);
 			   this->lbAnguloRotacion->Name = L"lbAnguloRotacion";
 			   this->lbAnguloRotacion->Size = System::Drawing::Size(125, 16);
 			   this->lbAnguloRotacion->TabIndex = 8;
 			   this->lbAnguloRotacion->Text = L"Angulo de Rotacion";
-			   // 
-			   // txtAnguloRotacion
-			   // 
+
 			   this->txtAnguloRotacion->Location = System::Drawing::Point(150, 32);
 			   this->txtAnguloRotacion->Name = L"txtAnguloRotacion";
 			   this->txtAnguloRotacion->Size = System::Drawing::Size(84, 22);
 			   this->txtAnguloRotacion->TabIndex = 7;
-			   // 
-			   // grpFigura
-			   // 
+
 			   this->grpFigura->BackColor = System::Drawing::SystemColors::GradientActiveCaption;
+			   this->grpFigura->Controls->Add(this->dgvCoordenadas);
 			   this->grpFigura->Controls->Add(this->btnDibujarFigura);
+			   this->grpFigura->Controls->Add(this->btnDibujarModoClick);
 			   this->grpFigura->Controls->Add(this->btnTriangulo);
 			   this->grpFigura->Controls->Add(this->btnCuadrado);
-			   this->grpFigura->Controls->Add(this->txtCordenadasY);
-			   this->grpFigura->Controls->Add(this->txtCordenadasX);
-			   this->grpFigura->Controls->Add(this->lbCordenadasY);
-			   this->grpFigura->Controls->Add(this->lbCordenadasX);
 			   this->grpFigura->Location = System::Drawing::Point(12, 13);
 			   this->grpFigura->Name = L"grpFigura";
-			   this->grpFigura->Size = System::Drawing::Size(253, 175);
+			   this->grpFigura->Size = System::Drawing::Size(253, 205);
 			   this->grpFigura->TabIndex = 1;
 			   this->grpFigura->TabStop = false;
 			   this->grpFigura->Text = L"Figura";
-			   // 
-			   // btnDibujarFigura
-			   // 
+
+			   this->dgvCoordenadas->AllowUserToResizeColumns = false;
+			   this->dgvCoordenadas->AllowUserToResizeRows = false;
+			   this->dgvCoordenadas->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::DisableResizing;
+			   this->dgvCoordenadas->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(2) {
+				   this->colX,
+					   this->colY
+			   });
+			   this->dgvCoordenadas->Location = System::Drawing::Point(66, 20);
+			   this->dgvCoordenadas->Name = L"dgvCoordenadas";
+			   this->dgvCoordenadas->RowHeadersVisible = false;
+			   this->dgvCoordenadas->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
+			   this->dgvCoordenadas->BackgroundColor = System::Drawing::Color::LightGray;
+			   this->dgvCoordenadas->Size = System::Drawing::Size(120, 85);
+			   this->dgvCoordenadas->TabIndex = 16;
+
+			   this->colX->HeaderText = L"X";
+			   this->colX->MinimumWidth = 6;
+			   this->colX->Name = L"colX";
+			   this->colX->Width = 50;
+
+			   this->colY->HeaderText = L"Y";
+			   this->colY->MinimumWidth = 6;
+			   this->colY->Name = L"colY";
+			   this->colY->Width = 50;
+
 			   this->btnDibujarFigura->Location = System::Drawing::Point(6, 110);
 			   this->btnDibujarFigura->Name = L"btnDibujarFigura";
-			   this->btnDibujarFigura->Size = System::Drawing::Size(241, 26);
+			   this->btnDibujarFigura->Size = System::Drawing::Size(115, 26);
 			   this->btnDibujarFigura->TabIndex = 13;
-			   this->btnDibujarFigura->Text = L"Dibujar Figura";
+			   this->btnDibujarFigura->Text = L"Dibujar Tabla";
 			   this->btnDibujarFigura->UseVisualStyleBackColor = true;
 			   this->btnDibujarFigura->Click += gcnew System::EventHandler(this, &FrmSimuladorTL::btnDibujarFigura_Click);
-			   // 
-			   // btnTriangulo
-			   // 
+
+			   this->btnDibujarModoClick->Location = System::Drawing::Point(132, 110);
+			   this->btnDibujarModoClick->Name = L"btnDibujarModoClick";
+			   this->btnDibujarModoClick->Size = System::Drawing::Size(115, 26);
+			   this->btnDibujarModoClick->TabIndex = 17;
+			   this->btnDibujarModoClick->Text = L"Dibujar Clicks";
+			   this->btnDibujarModoClick->UseVisualStyleBackColor = true;
+			   this->btnDibujarModoClick->Click += gcnew System::EventHandler(this, &FrmSimuladorTL::btnDibujarModoClick_Click);
+
 			   this->btnTriangulo->Location = System::Drawing::Point(6, 140);
 			   this->btnTriangulo->Name = L"btnTriangulo";
 			   this->btnTriangulo->Size = System::Drawing::Size(115, 26);
@@ -500,9 +464,7 @@ private: System::Windows::Forms::TextBox^ txtCentroY;
 			   this->btnTriangulo->Text = L"Triangulo";
 			   this->btnTriangulo->UseVisualStyleBackColor = true;
 			   this->btnTriangulo->Click += gcnew System::EventHandler(this, &FrmSimuladorTL::btnTriangulo_Click);
-			   // 
-			   // btnCuadrado
-			   // 
+
 			   this->btnCuadrado->Location = System::Drawing::Point(132, 140);
 			   this->btnCuadrado->Name = L"btnCuadrado";
 			   this->btnCuadrado->Size = System::Drawing::Size(115, 26);
@@ -510,55 +472,18 @@ private: System::Windows::Forms::TextBox^ txtCentroY;
 			   this->btnCuadrado->Text = L"Cuadrado";
 			   this->btnCuadrado->UseVisualStyleBackColor = true;
 			   this->btnCuadrado->Click += gcnew System::EventHandler(this, &FrmSimuladorTL::btnCuadrado_Click);
-			   // 
-			   // txtCordenadasY
-			   // 
-			   this->txtCordenadasY->Location = System::Drawing::Point(113, 70);
-			   this->txtCordenadasY->Name = L"txtCordenadasY";
-			   this->txtCordenadasY->Size = System::Drawing::Size(121, 22);
-			   this->txtCordenadasY->TabIndex = 12;
-			   // 
-			   // txtCordenadasX
-			   // 
-			   this->txtCordenadasX->Location = System::Drawing::Point(112, 32);
-			   this->txtCordenadasX->Name = L"txtCordenadasX";
-			   this->txtCordenadasX->Size = System::Drawing::Size(121, 22);
-			   this->txtCordenadasX->TabIndex = 11;
-			   // 
-			   // lbCordenadasY
-			   // 
-			   this->lbCordenadasY->AutoSize = true;
-			   this->lbCordenadasY->Location = System::Drawing::Point(10, 70);
-			   this->lbCordenadasY->Name = L"lbCordenadasY";
-			   this->lbCordenadasY->Size = System::Drawing::Size(97, 16);
-			   this->lbCordenadasY->TabIndex = 10;
-			   this->lbCordenadasY->Text = L"Cordenadas Y:";
-			   // 
-			   // lbCordenadasX
-			   // 
-			   this->lbCordenadasX->AutoSize = true;
-			   this->lbCordenadasX->Location = System::Drawing::Point(3, 38);
-			   this->lbCordenadasX->Name = L"lbCordenadasX";
-			   this->lbCordenadasX->Size = System::Drawing::Size(96, 16);
-			   this->lbCordenadasX->TabIndex = 9;
-			   this->lbCordenadasX->Text = L"Cordenadas X:";
-			   // 
-			   // pnlDibujar
-			   // 
+
 			   this->pnlDibujar->BackColor = System::Drawing::SystemColors::InactiveCaptionText;
 			   this->pnlDibujar->Location = System::Drawing::Point(285, 13);
 			   this->pnlDibujar->Name = L"pnlDibujar";
 			   this->pnlDibujar->Size = System::Drawing::Size(746, 700);
 			   this->pnlDibujar->TabIndex = 2;
 			   this->pnlDibujar->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &FrmSimuladorTL::pnlDibujar_Paint);
-			   // 
-			   // timer1
-			   // 
+			   this->pnlDibujar->MouseClick += gcnew System::Windows::Forms::MouseEventHandler(this, &FrmSimuladorTL::pnlDibujar_MouseClick);
+
 			   this->timer1->Tick += gcnew System::EventHandler(this, &FrmSimuladorTL::timer1_Tick);
-			   // 
-			   // btnRestablecerFigura
-			   // 
-			   this->btnRestablecerFigura->Location = System::Drawing::Point(12, 675);
+
+			   this->btnRestablecerFigura->Location = System::Drawing::Point(12, 685);
 			   this->btnRestablecerFigura->Name = L"btnRestablecerFigura";
 			   this->btnRestablecerFigura->Size = System::Drawing::Size(115, 35);
 			   this->btnRestablecerFigura->TabIndex = 3;
@@ -566,7 +491,7 @@ private: System::Windows::Forms::TextBox^ txtCentroY;
 			   this->btnRestablecerFigura->UseVisualStyleBackColor = true;
 			   this->btnRestablecerFigura->Click += gcnew System::EventHandler(this, &FrmSimuladorTL::btnRestablecerFigura_Click);
 
-			   this->btnReiniciar->Location = System::Drawing::Point(135, 675);
+			   this->btnReiniciar->Location = System::Drawing::Point(135, 685);
 			   this->btnReiniciar->Name = L"btnReiniciar";
 			   this->btnReiniciar->Size = System::Drawing::Size(115, 35);
 			   this->btnReiniciar->TabIndex = 4;
@@ -593,7 +518,7 @@ private: System::Windows::Forms::TextBox^ txtCentroY;
 			   this->groupBox3->ResumeLayout(false);
 			   this->groupBox3->PerformLayout();
 			   this->grpFigura->ResumeLayout(false);
-			   this->grpFigura->PerformLayout();
+			   (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dgvCoordenadas))->EndInit();
 			   this->ResumeLayout(false);
 
 		   }
@@ -692,7 +617,42 @@ private: System::Windows::Forms::TextBox^ txtCentroY;
 
 		DibujarRecta(gBuffer, pnlDibujar->Width, pnlDibujar->Height);
 
-		if (figuraActual != nullptr && dibujador != nullptr) {
+		if (modoClick) {
+			Pen^ penTemp = gcnew Pen(Color::Yellow, 2.0f);
+			SolidBrush^ brushTemp = gcnew SolidBrush(Color::Red);
+			int cx = pnlDibujar->Width / 2;
+			int cy = pnlDibujar->Height / 2;
+			PointF lastPt;
+			bool hasLast = false;
+
+			for (int i = 0; i < dgvCoordenadas->Rows->Count; i++) {
+				if (dgvCoordenadas->Rows[i]->IsNewRow) continue;
+				Object^ valX = dgvCoordenadas->Rows[i]->Cells[0]->Value;
+				Object^ valY = dgvCoordenadas->Rows[i]->Cells[1]->Value;
+
+				if (valX != nullptr && valY != nullptr) {
+					try {
+						double x = Double::Parse(valX->ToString(), System::Globalization::CultureInfo::InvariantCulture);
+						double y = Double::Parse(valY->ToString(), System::Globalization::CultureInfo::InvariantCulture);
+
+						float px = (float)(cx + x * escalaGrid);
+						float py = (float)(cy - y * escalaGrid);
+
+						gBuffer->FillEllipse(brushTemp, px - 3.0f, py - 3.0f, 6.0f, 6.0f);
+
+						if (hasLast) {
+							gBuffer->DrawLine(penTemp, lastPt.X, lastPt.Y, px, py);
+						}
+						lastPt = PointF(px, py);
+						hasLast = true;
+					}
+					catch (...) {}
+				}
+			}
+			delete penTemp;
+			delete brushTemp;
+		}
+		else if (figuraActual != nullptr && dibujador != nullptr) {
 			if (figuraBaseOriginal != nullptr) {
 				dibujador->DibujarFiguraComparativa(gBuffer, figuraBaseOriginal, figuraActual, escalaGrid, esHomotecia, cordenadaXCentroHototencia, cordenadaYCentroHototencia);
 			}
@@ -710,11 +670,11 @@ private: System::Windows::Forms::TextBox^ txtCentroY;
 		   void DibujarEjesConNumeros(Graphics^ g, int ancho, int alto) {
 			   int centroX = ancho / 2;
 			   int centroY = alto / 2;
-			   int escala = escalaGrid; // usa el miembro en lugar del literal
+			   int escala = escalaGrid;
 
 			   Pen^ penEjes = gcnew Pen(Color::White, 2.0f);
-			   g->DrawLine(penEjes, 0, centroY, ancho, centroY); // Eje X
-			   g->DrawLine(penEjes, centroX, 0, centroX, alto);  // Eje Y
+			   g->DrawLine(penEjes, 0, centroY, ancho, centroY);
+			   g->DrawLine(penEjes, centroX, 0, centroX, alto);
 
 			   System::Drawing::Font^ fuente = gcnew System::Drawing::Font("Arial", 8);
 			   SolidBrush^ brochaBlanca = gcnew SolidBrush(Color::White);
@@ -762,11 +722,6 @@ private: System::Windows::Forms::TextBox^ txtCentroY;
 			   return false;
 		   }
 
-		   bool ValidarCompoCordenada(String^ texto) {
-			   String^ patron = "^[+-]?\\d+(\\.\\d+)?(,\\s*[+-]?\\d+(\\.\\d+)?)*$";
-			   return System::Text::RegularExpressions::Regex::IsMatch(texto, patron);
-		   }
-
 		   bool validadarCampoEcuacionLineal(String^ pendiente, String^ coordenadaOrigen) {
 			   try
 			   {
@@ -790,67 +745,94 @@ private: System::Windows::Forms::TextBox^ txtCentroY;
 		}
 	}
 
-	private: System::Boolean incializarPuntos(Figura* figura, String^ coordsX, String^ coordsY) {
-		if (figura == nullptr) return false;
+	private: System::Void btnDibujarModoClick_Click(System::Object^ sender, System::EventArgs^ e) {
+		modoClick = true;
+		esHomotecia = false;
+		dgvCoordenadas->Rows->Clear();
+		if (figuraActual != nullptr) limpiarFigura(figuraActual);
+		if (figuraAnterior != nullptr) limpiarFigura(figuraAnterior);
+		if (figuraBaseOriginal != nullptr) { delete figuraBaseOriginal; figuraBaseOriginal = nullptr; }
+		pnlDibujar->Invalidate();
+	}
 
-		cli::array<String^>^ partesX = coordsX->Split(',');
-		cli::array<String^>^ partesY = coordsY->Split(',');
+	private: System::Void pnlDibujar_MouseClick(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
+		if (modoClick) {
+			if (e->Button == System::Windows::Forms::MouseButtons::Left) {
+				int centerX = pnlDibujar->Width / 2;
+				int centerY = pnlDibujar->Height / 2;
 
-		if (partesX->Length != partesY->Length) {
-			MessageBox::Show("El numero de cordenadas no conisiden en ambos campos, se debe tener correcpondencia entre cordenadas.");
-			return false;
-		}
+				double x_log = Math::Round((double)(e->X - centerX) / escalaGrid, 2);
+				double y_log = Math::Round((double)(centerY - e->Y) / escalaGrid, 2);
 
-		limpiarFigura(figura);
-
-		int nCordenadas = partesX->Length;
-		try {
-			for (int i = 0; i < nCordenadas; i++) {
-				double x = Double::Parse(partesX[i]->Trim(), System::Globalization::CultureInfo::InvariantCulture);
-				double y = Double::Parse(partesY[i]->Trim(), System::Globalization::CultureInfo::InvariantCulture);
-				double yRelative = -y;
-
-				figura->agregarPunto(new Punto(x, yRelative));
+				dgvCoordenadas->Rows->Add(x_log.ToString(System::Globalization::CultureInfo::InvariantCulture),
+					y_log.ToString(System::Globalization::CultureInfo::InvariantCulture));
+				pnlDibujar->Invalidate();
+			}
+			else if (e->Button == System::Windows::Forms::MouseButtons::Right) {
+				modoClick = false;
+				btnDibujarFigura_Click(nullptr, nullptr);
 			}
 		}
-		catch (Exception^ ex) {
-			MessageBox::Show("Error al parsear coordenadas: asegurate del formato y valores numericos.");
-			return false;
-		}
-
-		int centerX = pnlDibujar->Width / 2;
-		int centerY = pnlDibujar->Height / 2;
-		figura->setX(centerX);
-		figura->setY(centerY);
-
-		return true;
 	}
 
 	private: System::Void btnTriangulo_Click(System::Object^ sender, System::EventArgs^ e) {
-		txtCordenadasX->Text = "2, 6, 2";
-		txtCordenadasY->Text = "2, 2, 6";
+		modoClick = false;
+		dgvCoordenadas->Rows->Clear();
+		dgvCoordenadas->Rows->Add("2", "2");
+		dgvCoordenadas->Rows->Add("6", "2");
+		dgvCoordenadas->Rows->Add("2", "6");
 		btnDibujarFigura_Click(sender, e);
 	}
 
 	private: System::Void btnCuadrado_Click(System::Object^ sender, System::EventArgs^ e) {
-		txtCordenadasX->Text = "2, 6, 6, 2";
-		txtCordenadasY->Text = "2, 2, 6, 6";
+		modoClick = false;
+		dgvCoordenadas->Rows->Clear();
+		dgvCoordenadas->Rows->Add("2", "2");
+		dgvCoordenadas->Rows->Add("6", "2");
+		dgvCoordenadas->Rows->Add("6", "6");
+		dgvCoordenadas->Rows->Add("2", "6");
 		btnDibujarFigura_Click(sender, e);
 	}
 
 	private: System::Void btnDibujarFigura_Click(System::Object^ sender, System::EventArgs^ e) {
-		String^ textBoxX = txtCordenadasX->Text;
-		String^ textBoxY = txtCordenadasY->Text;
-
-		if (!ValidarCompoCordenada(textBoxX) || !ValidarCompoCordenada(textBoxY)) {
-			MessageBox::Show("Datos en el los Compos cordenada No validos. Se debe seguir el formato (1.5, -2, 4.8), por ejemplo");
-			return;
-		}
-
+		modoClick = false;
 		esHomotecia = false;
 
-		incializarPuntos(figuraAnterior, textBoxX, textBoxY);
-		incializarPuntos(figuraActual, textBoxX, textBoxY);
+		limpiarFigura(figuraAnterior);
+		limpiarFigura(figuraActual);
+
+		int centerX = pnlDibujar->Width / 2;
+		int centerY = pnlDibujar->Height / 2;
+		figuraAnterior->setX(centerX);
+		figuraAnterior->setY(centerY);
+		figuraActual->setX(centerX);
+		figuraActual->setY(centerY);
+
+		for (int i = 0; i < dgvCoordenadas->Rows->Count; i++) {
+			if (dgvCoordenadas->Rows[i]->IsNewRow) continue;
+
+			Object^ valX = dgvCoordenadas->Rows[i]->Cells[0]->Value;
+			Object^ valY = dgvCoordenadas->Rows[i]->Cells[1]->Value;
+
+			if (valX != nullptr && valY != nullptr) {
+				try {
+					double x = Double::Parse(valX->ToString(), System::Globalization::CultureInfo::InvariantCulture);
+					double y = Double::Parse(valY->ToString(), System::Globalization::CultureInfo::InvariantCulture);
+					double yRelative = -y;
+
+					figuraAnterior->agregarPunto(new Punto(x, yRelative));
+					figuraActual->agregarPunto(new Punto(x, yRelative));
+				}
+				catch (...) {
+					MessageBox::Show("Valor invalido en la tabla de coordenadas.");
+					return;
+				}
+			}
+		}
+
+		if (figuraActual->getNumeroPuntos() < 2) {
+			return;
+		}
 
 		if (figuraBaseOriginal) delete figuraBaseOriginal;
 		figuraBaseOriginal = figuraActual->clonarFigura();
@@ -876,6 +858,7 @@ private: System::Windows::Forms::TextBox^ txtCentroY;
 		}
 
 		esHomotecia = false;
+		modoClick = false;
 		guardarEstadoActual();
 
 		double valorAngulo = Double::Parse(anguloRotacion, System::Globalization::CultureInfo::InvariantCulture);
@@ -891,6 +874,7 @@ private: System::Windows::Forms::TextBox^ txtCentroY;
 		if (this->cboEjeReflexion->SelectedIndex == -1 || figuraActual == nullptr) return;
 
 		esHomotecia = false;
+		modoClick = false;
 		guardarEstadoActual();
 
 		Reflexion* objReflejar = nullptr;
@@ -937,19 +921,16 @@ private: System::Windows::Forms::TextBox^ txtCentroY;
 			return;
 		}
 
-
 		esHomotecia = true;
+		modoClick = false;
 		guardarEstadoActual();
 
-		
 		double factorEscala = Double::Parse(strFactor, System::Globalization::CultureInfo::InvariantCulture);
 		double centroHomotenciaX = Convert::ToDouble(txtCoordXPHomotencia->Text);
 		double centroHomotenciaY = Convert::ToDouble(txtCoordYPHomotencia->Text);
 
-		this->cordenadaXCentroHototencia = centroHomotenciaX*escalaGrid + figuraActual->getX();
-		this->cordenadaYCentroHototencia = -centroHomotenciaY*escalaGrid + figuraActual->getY();
-
-		
+		this->cordenadaXCentroHototencia = centroHomotenciaX * escalaGrid + figuraActual->getX();
+		this->cordenadaYCentroHototencia = -centroHomotenciaY * escalaGrid + figuraActual->getY();
 
 		int tipoEscalado = 0;
 		if (rbtnX->Checked) {
@@ -971,8 +952,6 @@ private: System::Windows::Forms::TextBox^ txtCentroY;
 			this->animacion = new Animacion(objHomotecia, dibujador, 24, 1);
 			timer1->Start();
 		}
-		figuraActual;
-
 	}
 
 	private: System::Void timer1_Tick(System::Object^ sender, System::EventArgs^ e) {
@@ -999,6 +978,7 @@ private: System::Windows::Forms::TextBox^ txtCentroY;
 	private: System::Void btnRestablecerFigura_Click(System::Object^ sender, System::EventArgs^ e) {
 		if (figuraAnterior && figuraActual->getNumeroPuntos() > 0) {
 			esHomotecia = false;
+			modoClick = false;
 			TransRestablecer* transRes = new TransRestablecer(figuraActual, figuraAnterior);
 			this->animacion = new Animacion(transRes, dibujador, 24, 1);
 			timer1->Start();
@@ -1020,9 +1000,9 @@ private: System::Windows::Forms::TextBox^ txtCentroY;
 
 		esHomotecia = false;
 		mostrarRecta = false;
+		modoClick = false;
 
-		txtCordenadasX->Text = "";
-		txtCordenadasY->Text = "";
+		dgvCoordenadas->Rows->Clear();
 		txtAnguloRotacion->Text = "";
 		txtFactor->Text = "";
 		txtPendiente->Text = "";
@@ -1050,9 +1030,6 @@ private: System::Windows::Forms::TextBox^ txtCentroY;
 			mostrarRecta = false;
 		}
 	}
-
-	private: System::Void txtAnguloRotacion_TextChanged(System::Object^ sender, System::EventArgs^ e) {}
-	private: System::Void textCordenadaOrigen_TextChanged(System::Object^ sender, System::EventArgs^ e) {}
 
 	};
 }

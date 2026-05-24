@@ -5,7 +5,7 @@
 
 class Rotacion : public Trasformacion {
 private:
-    double angulo; // ángulo en grados (puede ser fraccionario)
+    double angulo; 
 
 public:
     Rotacion(Figura* figuraActual, double anguloRotacion) : Trasformacion(figuraActual) {

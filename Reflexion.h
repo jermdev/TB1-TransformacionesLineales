@@ -5,16 +5,16 @@
 
 class Reflexion : public Trasformacion {
 private:
-    int tipoEje;    // 0 = Eje X, 1 = Eje Y, 2 = Recta general
-    double m;       // pendiente (en unidades de píxel-coordenada compatible con puntos)
-    double b;       // ordenada al origen (en píxeles)
+    int tipoEje; 
+    double m;      
+    double b;       
 
 public:
-    // Constructor para ejes X/Y (compatibilidad con uso anterior)
+    
     Reflexion(Figura* figuraActual, int tipo) 
         : Trasformacion(figuraActual), tipoEje(tipo), m(0.0), b(0.0) {}
 
-    // Constructor para recta general y = m x + b (b DEBE estar en unidades de píxel)
+    
     Reflexion(Figura* figuraActual, double pendiente, double ordenadaOrigenEnPixeles)
         : Trasformacion(figuraActual), tipoEje(2), m(pendiente), b(ordenadaOrigenEnPixeles) {}
 
@@ -27,15 +27,14 @@ public:
             double x = puntos[i]->getX();
             double y = puntos[i]->getY();
 
-            if (this->tipoEje == 0) { // Eje X: invertir Y
+            if (this->tipoEje == 0) { 
                 puntos[i]->setY(y * -1);
             }
-            else if (this->tipoEje == 1) { // Eje Y: invertir X
+            else if (this->tipoEje == 1) { 
                 puntos[i]->setX(x * -1);
             }
-            else if (this->tipoEje == 2) { // Recta y = m x + b (m en pendiente, b en píxeles)
-                // Ecuación general: a x + c y + d = 0
-                // Para y = m x + b -> a = m, c = -1, d = b
+            else if (this->tipoEje == 2) { 
+                
                 
                 double A = m;
                 double B = -1.0;

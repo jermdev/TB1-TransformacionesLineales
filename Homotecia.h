@@ -14,13 +14,13 @@ public:
 	Homotecia(Figura* figuraActual, double factorEscala, int tipoHomotecia)
 		: Trasformacion(figuraActual), factor(factorEscala), tipo(tipoHomotecia), cx(0.0), cy(0.0) {}
 
-	// 
+	
 	Homotecia(Figura* figuraActual, double factorEscala, int tipoHomotecia, double centroX, double centroY)
 		: Trasformacion(figuraActual), factor(factorEscala), tipo(tipoHomotecia), cx(centroX), cy(centroY) {}
 
 	~Homotecia() {}
 
-	// Setters / getters
+	
 	void setFactor(double nuevoFactor) { this->factor = nuevoFactor; }
 	double getFactor() const { return this->factor; }
 
@@ -30,7 +30,7 @@ public:
 	void setCentro(double centroX, double centroY) { this->cx = centroX; this->cy = centroY; }
 	void getCentro(double &outX, double &outY) const { outX = cx; outY = cy; }
 
-	// Apply the homothety to all points of the figura
+	
 	void trasformacion() override {
 		Figura* figuraObjetivo = getFigura();
 		if (figuraObjetivo == nullptr) return;
@@ -40,18 +40,18 @@ public:
 			double x = puntos[i]->getX();
 			double y = puntos[i]->getY();
 
-			// scale with respect to center (cx, cy): new = center + factor * (old - center)
-			if (this->tipo == 0) { // uniform scaling both axes
+		
+			if (this->tipo == 0) { 
 				double nx = cx + factor * (x - cx);
 				double ny = -cy + factor * (y + cy);
 				puntos[i]->setX(nx);
 				puntos[i]->setY(ny);
 			}
-			else if (this->tipo == 1) { // scale X only
+			else if (this->tipo == 1) { 
 				double nx = cx + factor * (x - cx);
 				puntos[i]->setX(nx);
 			}
-			else if (this->tipo == 2) { // scale Y only
+			else if (this->tipo == 2) { 
 				double ny = -cy + factor * (y + cy);
 				puntos[i]->setY(ny);
 			}
