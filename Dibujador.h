@@ -3,6 +3,7 @@
 #include "Punto.h"
 #include <vector>
 #include <cmath>
+#include <algorithm>
 
 using namespace System::Drawing;
 using namespace System::Drawing::Drawing2D;
@@ -86,23 +87,77 @@ public:
 	}
 
 	void DibujarAuxiliar(Graphics^ g, Figura* fig, Color c, double escala, DashStyle style, int thickness) {
+
+
 		auto puntosLista = fig->getPuntos();
 		size_t n = puntosLista.size();
+
 		if (n < 2) return;
 
 		float offX = (float)fig->getX();
 		float offY = (float)fig->getY();
 
-		cli::array<PointF>^ poly = gcnew cli::array<PointF>(static_cast<int>(n));
+		// ===== COPIAR LOS PUNTOS =====
+		std::vector<Punto*> puntosOrdenados = puntosLista;
+
+		// ===== CALCULAR CENTRO =====
+		double centroX = 0.0;
+		double centroY = 0.0;
+
+		for (auto p : puntosOrdenados) {
+			centroX += p->getX();
+			centroY += p->getY();
+		}
+
+		centroX /= n;
+		centroY /= n;
+
+		// ===== ORDENAR POR ANGULO =====
+		std::sort(
+			puntosOrdenados.begin(),
+			puntosOrdenados.end(),
+
+			[centroX, centroY](Punto* a, Punto* b) {
+
+				double angA = atan2(
+					a->getY() - centroY,
+					a->getX() - centroX
+				);
+
+				double angB = atan2(
+					b->getY() - centroY,
+					b->getX() - centroX
+				);
+
+				return angA < angB;
+			}
+		);
+
+		// ===== CREAR POLIGONO =====
+		cli::array<PointF>^ poly =
+			gcnew cli::array<PointF>((int)n);
+
 		for (size_t i = 0; i < n; ++i) {
-			float x = (float)(puntosLista[i]->getX() * escala + offX);
-			float y = (float)(puntosLista[i]->getY() * escala + offY);
-			poly[static_cast<int>(i)] = PointF(x, y);
+
+			float x = (float)(
+				offX +
+				puntosOrdenados[i]->getX() * escala
+				);
+
+			// Invertir Y
+			float y = (float)(
+				offY +
+				puntosOrdenados[i]->getY() * escala
+				);
+
+			poly[(int)i] = PointF(x, y);
 		}
 
 		Pen^ pen = gcnew Pen(c, (float)thickness);
 		pen->DashStyle = style;
+
 		g->DrawPolygon(pen, poly);
+
 		delete pen;
 	}
 
