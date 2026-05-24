@@ -110,6 +110,7 @@ namespace TB1TransformacionesLineales {
 	private: System::Windows::Forms::Button^ btnRotar;
 	private: System::Windows::Forms::Button^ btnDibujarFigura;
 	private: System::Windows::Forms::Button^ btnDibujarModoClick;
+	private: System::Windows::Forms::Button^ btnListo;
 	private: System::Windows::Forms::ComboBox^ cboEjeReflexion;
 	private: System::Windows::Forms::Button^ btnReflejar;
 	private: System::ComponentModel::IContainer^ components;
@@ -194,6 +195,7 @@ namespace TB1TransformacionesLineales {
 			   this->colY = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			   this->btnDibujarFigura = (gcnew System::Windows::Forms::Button());
 			   this->btnDibujarModoClick = (gcnew System::Windows::Forms::Button());
+			   this->btnListo = (gcnew System::Windows::Forms::Button());
 			   this->btnTriangulo = (gcnew System::Windows::Forms::Button());
 			   this->btnCuadrado = (gcnew System::Windows::Forms::Button());
 			   this->pnlDibujar = (gcnew System::Windows::Forms::Panel());
@@ -407,6 +409,7 @@ namespace TB1TransformacionesLineales {
 			   this->grpFigura->Controls->Add(this->dgvCoordenadas);
 			   this->grpFigura->Controls->Add(this->btnDibujarFigura);
 			   this->grpFigura->Controls->Add(this->btnDibujarModoClick);
+			   this->grpFigura->Controls->Add(this->btnListo);
 			   this->grpFigura->Controls->Add(this->btnTriangulo);
 			   this->grpFigura->Controls->Add(this->btnCuadrado);
 			   this->grpFigura->Location = System::Drawing::Point(12, 13);
@@ -441,21 +444,21 @@ namespace TB1TransformacionesLineales {
 			   this->colY->Name = L"colY";
 			   this->colY->Width = 50;
 
-			   this->btnDibujarFigura->Location = System::Drawing::Point(6, 110);
-			   this->btnDibujarFigura->Name = L"btnDibujarFigura";
-			   this->btnDibujarFigura->Size = System::Drawing::Size(115, 26);
-			   this->btnDibujarFigura->TabIndex = 13;
-			   this->btnDibujarFigura->Text = L"Dibujar Tabla";
-			   this->btnDibujarFigura->UseVisualStyleBackColor = true;
-			   this->btnDibujarFigura->Click += gcnew System::EventHandler(this, &FrmSimuladorTL::btnDibujarFigura_Click);
-
-			   this->btnDibujarModoClick->Location = System::Drawing::Point(132, 110);
+			   this->btnDibujarModoClick->Location = System::Drawing::Point(6, 110);
 			   this->btnDibujarModoClick->Name = L"btnDibujarModoClick";
 			   this->btnDibujarModoClick->Size = System::Drawing::Size(115, 26);
 			   this->btnDibujarModoClick->TabIndex = 17;
-			   this->btnDibujarModoClick->Text = L"Dibujar Clicks";
+			   this->btnDibujarModoClick->Text = L"Modo Clics";
 			   this->btnDibujarModoClick->UseVisualStyleBackColor = true;
 			   this->btnDibujarModoClick->Click += gcnew System::EventHandler(this, &FrmSimuladorTL::btnDibujarModoClick_Click);
+
+			   this->btnDibujarFigura->Location = System::Drawing::Point(132, 110);
+			   this->btnDibujarFigura->Name = L"btnDibujarFigura";
+			   this->btnDibujarFigura->Size = System::Drawing::Size(115, 26);
+			   this->btnDibujarFigura->TabIndex = 13;
+			   this->btnDibujarFigura->Text = L"Dibujar Figura";
+			   this->btnDibujarFigura->UseVisualStyleBackColor = true;
+			   this->btnDibujarFigura->Click += gcnew System::EventHandler(this, &FrmSimuladorTL::btnDibujarFigura_Click);
 
 			   this->btnTriangulo->Location = System::Drawing::Point(6, 140);
 			   this->btnTriangulo->Name = L"btnTriangulo";
@@ -472,6 +475,15 @@ namespace TB1TransformacionesLineales {
 			   this->btnCuadrado->Text = L"Cuadrado";
 			   this->btnCuadrado->UseVisualStyleBackColor = true;
 			   this->btnCuadrado->Click += gcnew System::EventHandler(this, &FrmSimuladorTL::btnCuadrado_Click);
+
+			   this->btnListo->Location = System::Drawing::Point(6, 172);
+			   this->btnListo->Name = L"btnListo";
+			   this->btnListo->Size = System::Drawing::Size(241, 26);
+			   this->btnListo->TabIndex = 18;
+			   this->btnListo->Text = L"LISTO (Terminar Clics)";
+			   this->btnListo->UseVisualStyleBackColor = true;
+			   this->btnListo->Visible = false;
+			   this->btnListo->Click += gcnew System::EventHandler(this, &FrmSimuladorTL::btnListo_Click);
 
 			   this->pnlDibujar->BackColor = System::Drawing::SystemColors::InactiveCaptionText;
 			   this->pnlDibujar->Location = System::Drawing::Point(285, 13);
@@ -575,6 +587,7 @@ namespace TB1TransformacionesLineales {
 		g->DrawLine(pen, (float)cx, 0.0f, (float)cx, (float)h);
 
 		DibujarEjesConNumeros(g, w, h);
+		delete pen;
 		delete g;
 	}
 
@@ -618,12 +631,9 @@ namespace TB1TransformacionesLineales {
 		DibujarRecta(gBuffer, pnlDibujar->Width, pnlDibujar->Height);
 
 		if (modoClick) {
-			Pen^ penTemp = gcnew Pen(Color::Yellow, 2.0f);
 			SolidBrush^ brushTemp = gcnew SolidBrush(Color::Red);
 			int cx = pnlDibujar->Width / 2;
 			int cy = pnlDibujar->Height / 2;
-			PointF lastPt;
-			bool hasLast = false;
 
 			for (int i = 0; i < dgvCoordenadas->Rows->Count; i++) {
 				if (dgvCoordenadas->Rows[i]->IsNewRow) continue;
@@ -639,17 +649,10 @@ namespace TB1TransformacionesLineales {
 						float py = (float)(cy - y * escalaGrid);
 
 						gBuffer->FillEllipse(brushTemp, px - 3.0f, py - 3.0f, 6.0f, 6.0f);
-
-						if (hasLast) {
-							gBuffer->DrawLine(penTemp, lastPt.X, lastPt.Y, px, py);
-						}
-						lastPt = PointF(px, py);
-						hasLast = true;
 					}
 					catch (...) {}
 				}
 			}
-			delete penTemp;
 			delete brushTemp;
 		}
 		else if (figuraActual != nullptr && dibujador != nullptr) {
@@ -670,29 +673,56 @@ namespace TB1TransformacionesLineales {
 		   void DibujarEjesConNumeros(Graphics^ g, int ancho, int alto) {
 			   int centroX = ancho / 2;
 			   int centroY = alto / 2;
-			   int escala = escalaGrid;
 
-			   Pen^ penEjes = gcnew Pen(Color::White, 2.0f);
-			   g->DrawLine(penEjes, 0, centroY, ancho, centroY);
-			   g->DrawLine(penEjes, centroX, 0, centroX, alto);
+			   int step = 1;
+			   if (escalaGrid > 0) {
+				   double unitsPerLabel = 40.0 / escalaGrid;
+				   if (unitsPerLabel > 1.0) {
+					   if (unitsPerLabel <= 2.0) step = 2;
+					   else if (unitsPerLabel <= 5.0) step = 5;
+					   else if (unitsPerLabel <= 10.0) step = 10;
+					   else if (unitsPerLabel <= 20.0) step = 20;
+					   else if (unitsPerLabel <= 50.0) step = 50;
+					   else if (unitsPerLabel <= 100.0) step = 100;
+					   else if (unitsPerLabel <= 200.0) step = 200;
+					   else if (unitsPerLabel <= 500.0) step = 500;
+					   else step = 1000;
+				   }
+			   }
+
+			   int maxUnitsX = (int)((ancho / 2) / escalaGrid) + 1;
+			   int maxUnitsY = (int)((alto / 2) / escalaGrid) + 1;
+			   int maxUnits = Math::Max(maxUnitsX, maxUnitsY);
 
 			   System::Drawing::Font^ fuente = gcnew System::Drawing::Font("Arial", 8);
 			   SolidBrush^ brochaBlanca = gcnew SolidBrush(Color::White);
 			   Pen^ penMarcas = gcnew Pen(Color::LightGray, 1.0f);
 
-			   for (int i = -15; i <= 15; i++) {
-				   if (i == 0) continue;
-				   int posX = centroX + (i * escala);
-				   g->DrawLine(penMarcas, posX, centroY - 3, posX, centroY + 3);
-				   g->DrawString(i.ToString(), fuente, brochaBlanca, posX - 6, centroY + 5);
+			   for (int i = step; i <= maxUnits; i += step) {
+				   int posX1 = centroX + (int)(i * escalaGrid);
+				   int posX2 = centroX - (int)(i * escalaGrid);
+
+				   g->DrawLine(penMarcas, posX1, centroY - 3, posX1, centroY + 3);
+				   g->DrawString(i.ToString(), fuente, brochaBlanca, posX1 - 6, centroY + 5);
+
+				   g->DrawLine(penMarcas, posX2, centroY - 3, posX2, centroY + 3);
+				   g->DrawString((-i).ToString(), fuente, brochaBlanca, posX2 - 6, centroY + 5);
 			   }
 
-			   for (int i = -15; i <= 15; i++) {
-				   if (i == 0) continue;
-				   int posY = centroY - (i * escala);
-				   g->DrawLine(penMarcas, centroX - 3, posY, centroX + 3, posY);
-				   g->DrawString(i.ToString(), fuente, brochaBlanca, centroX + 5, posY - 6);
+			   for (int i = step; i <= maxUnits; i += step) {
+				   int posY1 = centroY - (int)(i * escalaGrid);
+				   int posY2 = centroY + (int)(i * escalaGrid);
+
+				   g->DrawLine(penMarcas, centroX - 3, posY1, centroX + 3, posY1);
+				   g->DrawString(i.ToString(), fuente, brochaBlanca, centroX + 5, posY1 - 6);
+
+				   g->DrawLine(penMarcas, centroX - 3, posY2, centroX + 3, posY2);
+				   g->DrawString((-i).ToString(), fuente, brochaBlanca, centroX + 5, posY2 - 6);
 			   }
+
+			   delete fuente;
+			   delete brochaBlanca;
+			   delete penMarcas;
 		   }
 
 		   bool validarCampoRotacion(String^ campoAngulo) {
@@ -748,11 +778,20 @@ namespace TB1TransformacionesLineales {
 	private: System::Void btnDibujarModoClick_Click(System::Object^ sender, System::EventArgs^ e) {
 		modoClick = true;
 		esHomotecia = false;
+		btnListo->Visible = true;
 		dgvCoordenadas->Rows->Clear();
 		if (figuraActual != nullptr) limpiarFigura(figuraActual);
 		if (figuraAnterior != nullptr) limpiarFigura(figuraAnterior);
 		if (figuraBaseOriginal != nullptr) { delete figuraBaseOriginal; figuraBaseOriginal = nullptr; }
 		pnlDibujar->Invalidate();
+	}
+
+	private: System::Void btnListo_Click(System::Object^ sender, System::EventArgs^ e) {
+		if (modoClick) {
+			modoClick = false;
+			btnListo->Visible = false;
+			btnDibujarFigura_Click(nullptr, nullptr);
+		}
 	}
 
 	private: System::Void pnlDibujar_MouseClick(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
@@ -770,6 +809,7 @@ namespace TB1TransformacionesLineales {
 			}
 			else if (e->Button == System::Windows::Forms::MouseButtons::Right) {
 				modoClick = false;
+				btnListo->Visible = false;
 				btnDibujarFigura_Click(nullptr, nullptr);
 			}
 		}
@@ -777,6 +817,7 @@ namespace TB1TransformacionesLineales {
 
 	private: System::Void btnTriangulo_Click(System::Object^ sender, System::EventArgs^ e) {
 		modoClick = false;
+		btnListo->Visible = false;
 		dgvCoordenadas->Rows->Clear();
 		dgvCoordenadas->Rows->Add("2", "2");
 		dgvCoordenadas->Rows->Add("6", "2");
@@ -786,6 +827,7 @@ namespace TB1TransformacionesLineales {
 
 	private: System::Void btnCuadrado_Click(System::Object^ sender, System::EventArgs^ e) {
 		modoClick = false;
+		btnListo->Visible = false;
 		dgvCoordenadas->Rows->Clear();
 		dgvCoordenadas->Rows->Add("2", "2");
 		dgvCoordenadas->Rows->Add("6", "2");
@@ -797,6 +839,7 @@ namespace TB1TransformacionesLineales {
 	private: System::Void btnDibujarFigura_Click(System::Object^ sender, System::EventArgs^ e) {
 		modoClick = false;
 		esHomotecia = false;
+		btnListo->Visible = false;
 
 		limpiarFigura(figuraAnterior);
 		limpiarFigura(figuraActual);
@@ -859,6 +902,7 @@ namespace TB1TransformacionesLineales {
 
 		esHomotecia = false;
 		modoClick = false;
+		btnListo->Visible = false;
 		guardarEstadoActual();
 
 		double valorAngulo = Double::Parse(anguloRotacion, System::Globalization::CultureInfo::InvariantCulture);
@@ -875,6 +919,7 @@ namespace TB1TransformacionesLineales {
 
 		esHomotecia = false;
 		modoClick = false;
+		btnListo->Visible = false;
 		guardarEstadoActual();
 
 		Reflexion* objReflejar = nullptr;
@@ -923,6 +968,7 @@ namespace TB1TransformacionesLineales {
 
 		esHomotecia = true;
 		modoClick = false;
+		btnListo->Visible = false;
 		guardarEstadoActual();
 
 		double factorEscala = Double::Parse(strFactor, System::Globalization::CultureInfo::InvariantCulture);
@@ -979,6 +1025,11 @@ namespace TB1TransformacionesLineales {
 		if (figuraAnterior && figuraActual->getNumeroPuntos() > 0) {
 			esHomotecia = false;
 			modoClick = false;
+			btnListo->Visible = false;
+
+			if (figuraBaseOriginal) delete figuraBaseOriginal;
+			figuraBaseOriginal = figuraAnterior->clonarFigura();
+
 			TransRestablecer* transRes = new TransRestablecer(figuraActual, figuraAnterior);
 			this->animacion = new Animacion(transRes, dibujador, 24, 1);
 			timer1->Start();
@@ -1001,6 +1052,7 @@ namespace TB1TransformacionesLineales {
 		esHomotecia = false;
 		mostrarRecta = false;
 		modoClick = false;
+		btnListo->Visible = false;
 
 		dgvCoordenadas->Rows->Clear();
 		txtAnguloRotacion->Text = "";
